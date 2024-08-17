@@ -71,7 +71,5 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
-
-# ds store
-.DS_Store
-*/.DS_Store
+# mono crash
+mono_crash.*
