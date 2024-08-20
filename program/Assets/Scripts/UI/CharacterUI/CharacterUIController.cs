@@ -6,13 +6,28 @@ public class CharacterUIController : MonoBehaviour
 	private ProgressBar healthBar;
 	private ProgressBar actGaugeBar;
 
-
 	private void OnEnable()
 	{
 		var root = GetComponent<UIDocument>().rootVisualElement;
 		healthBar = root.Q<ProgressBar>("health-bar");
 		actGaugeBar = root.Q<ProgressBar>("act-gauge-bar");
+
 	}
+	public void UpdateHealthBar(float currentHealth, float maxHealth)
+    {
+        if (healthBar != null)
+        {
+            healthBar.value = (currentHealth / maxHealth) * 100f;
+        }
+    }
+
+    public void UpdateActGaugeBar(float currentGauge, float maxGauge)
+    {
+        if (actGaugeBar != null)
+        {
+            actGaugeBar.value = (currentGauge / maxGauge) * 100f;
+        }
+    }
     // private Label dousedLabel;
     // private Button repositionButton;
 
