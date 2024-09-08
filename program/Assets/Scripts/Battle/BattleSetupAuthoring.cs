@@ -27,7 +27,10 @@ namespace Battle
 
 			for (int i = 0; i < BattleConstants.BATTLE_CHARACTER_COUNT; i++)
 			{
-				playerCharacters.Add(new PlayerCharacterDataBuffer());
+				playerCharacters.Add(new PlayerCharacterDataBuffer
+				{
+					Value = BattleConstants.playerCharactersData[i]
+				});
 			}
 
 			var playerCharacterPositions = AddBuffer<PlayerCharacterPositionBuffer>(playerEntity);
@@ -45,7 +48,10 @@ namespace Battle
 			var enemyCharacters = AddBuffer<EnemyCharacterDataBuffer>(enemyEntity);
 			for (int i = 0; i < BattleConstants.BATTLE_CHARACTER_COUNT; i++)
 			{
-				enemyCharacters.Add(new EnemyCharacterDataBuffer());
+				enemyCharacters.Add(new EnemyCharacterDataBuffer
+				{
+					Value = BattleConstants.enemyCharactersData[i]
+				});
 			}
 
 			var enemyCharacterPositions = AddBuffer<EnemyCharacterPositionBuffer>(enemyEntity);

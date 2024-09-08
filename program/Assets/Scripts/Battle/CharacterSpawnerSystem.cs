@@ -39,7 +39,7 @@ namespace Battle
 
 			var spawner = SystemAPI.GetSingleton<CharacterSpawner>();
 
-			Debug.Log("Character Spawn Start");
+			Debug.Log("Player Characters Spawn Start");
 			foreach (var (playerBattleData, playerBattleDataEntity) in SystemAPI.Query<PlayerBattleData>().WithEntityAccess()) 
 			{
 				var playerCharactersData = state.EntityManager.GetBuffer<PlayerCharacterDataBuffer>(playerBattleDataEntity);
@@ -53,7 +53,27 @@ namespace Battle
 				{
 					var characterData = playerCharactersData[i];
 					var characterPosition = playerCharacterPositions[i];
-					// var characterEntity = state.EntityManager.Instantiate(spawner.CharacterPrefab);
+					var transform = SystemAPI.GetComponentRW<LocalTransform>(instances[i]);
+					transform.ValueRW.Position = characterPosition.Position;
+					Debug.Log("Spawned character at " + characterPosition.Position);
+					Debug.Log("Character Data Id : " + characterData.Value.Id);
+				}
+			}
+
+			Debug.Log("Enemy Characters Spawn Start");
+			foreach (var (enemyBattleData, enemyBattleDataEntity) in SystemAPI.Query<EnemyBattleData>().WithEntityAccess()) 
+			{
+				var enemyCharactersData = state.EntityManager.GetBuffer<EnemyCharacterDataBuffer>(enemyBattleDataEntity);
+				var enemyCharacterPositions = state.EntityManager.GetBuffer<EnemyCharacterPositionBuffer>(enemyBattleDataEntity);
+
+				// Spawn Characters
+				// For now, we will spawn the pre defined characters
+				var instances = new NativeArray<Entity>(BattleConstants.BATTLE_CHARACTER_COUNT, Allocator.Temp);
+				state.EntityManager.Instantiate(spawner.CharacterPrefab, instances);
+				for (int i = 0; i < BattleConstants.BATTLE_CHARACTER_COUNT; i++)
+				{
+					var characterData = enemyCharactersData[i];
+					var characterPosition = enemyCharacterPositions[i];
 					var transform = SystemAPI.GetComponentRW<LocalTransform>(instances[i]);
 					transform.ValueRW.Position = characterPosition.Position;
 					Debug.Log("Spawned character at " + characterPosition.Position);
