@@ -8,10 +8,22 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Entities;
 using UnityEngine;
 
 namespace Character
-{
+{	
+	public struct CharacterHealth : IComponentData
+	{
+		public int Value;
+	}
+
+	public struct CharacterAttack : IComponentData
+	{
+		public int Value;
+	}
+
+	
 	public class CharacterStat 
 	{
 		private int health = 0;

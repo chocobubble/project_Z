@@ -1,6 +1,0 @@
-<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI%20Toolkit/CharacterCss.uss?fileID=7433441132597879392&amp;guid=4c33de98461dd4f3b97dc9fddb3180a2&amp;type=3#CharacterCss" />
-    <engine:VisualElement style="flex-grow: 1;">
-        <engine:ProgressBar value="22" title="my-progress" style="left: 0; top: 100px; right: 100px; bottom: 100px;" />
-    </engine:VisualElement>
-</engine:UXML>

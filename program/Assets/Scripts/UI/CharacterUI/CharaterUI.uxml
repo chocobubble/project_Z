@@ -1,0 +1,11 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Scripts/UI/CharacterUI/CharacterCss.uss?fileID=7433441132597879392&amp;guid=4c33de98461dd4f3b97dc9fddb3180a2&amp;type=3#CharacterCss" />
+    <engine:VisualElement style="flex-grow: 1; flex-direction: column; position: absolute; right: 120px; bottom: 0; left: -20px; top: -54px; flex-basis: auto;">
+        <engine:VisualElement name="health-box" style="position: absolute; left: 10px; bottom: 10px;">
+            <engine:Label name="health-label" text="Health" style="position: absolute; left: 10px; bottom: 10px;" />
+        </engine:VisualElement>
+        <engine:VisualElement name="attack-box" style="position: absolute; right: 10px; bottom: 10px;">
+            <engine:Label name="attack-label" text="Attack" style="position: absolute; right: 10px; bottom: 10px;" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

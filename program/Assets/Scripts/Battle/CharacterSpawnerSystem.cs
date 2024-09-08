@@ -2,6 +2,8 @@ using Unity.Entities;
 using Unity.Transforms;
 using Unity.Burst;
 using UnityEngine;
+using Data;
+using Unity.Collections;
 
 namespace Battle
 {
@@ -13,6 +15,9 @@ namespace Battle
 		{
 			// This call makes the system not update unless at least one entity in the world exists that has the Spawner component.
 			state.RequireForUpdate<CharacterSpawner>();
+			state.RequireForUpdate<CharacterSpawnerStatus>();
+			state.RequireForUpdate<BattleConfig>();
+			state.RequireForUpdate<BattleSetup>();
 		}
 		public void OnDestroy(ref SystemState state) {}
 
@@ -24,48 +29,77 @@ namespace Battle
 				Debug.Log("No CharacterSpawner component found");
 				return;
 			}
-			var spawner = SystemAPI.GetSingleton<CharacterSpawner>();
+			var spawnerStatus = SystemAPI.GetSingleton<CharacterSpawnerStatus>();
 			
-			if (spawner.Status != SpawnerStatus.Spawning) 
+			if (spawnerStatus.Status != SpawnerStatus.Spawning) 
 			{
 				// Debug.Log("Spawner status is not Spawning");
 				return;
 			}
-			
-			var characterBundlesToSpawn = BattleDataContainer.Instance.CharacterBundlesToSpawn;
-			if (characterBundlesToSpawn == null || characterBundlesToSpawn.Count == 0) 
-			{
-				Debug.Log("CharacterBundlesToSpawn is null or empty");
-				spawner.Status = SpawnerStatus.None;
-				SystemAPI.SetSingleton(spawner);
-				return;
-			}
+
+			var spawner = SystemAPI.GetSingleton<CharacterSpawner>();
 
 			Debug.Log("Character Spawn Start");
-			// Spawn the first character in the list
-			var characterBundle = characterBundlesToSpawn[0];
-			var characterStat = characterBundle.GetCharacterStat();
-			var characterEntity = state.EntityManager.Instantiate(spawner.GetCharacterPrefab());
-			// state.EntityManager.AddComponent(characterEntity, 
+			foreach (var (playerBattleData, playerBattleDataEntity) in SystemAPI.Query<PlayerBattleData>().WithEntityAccess()) 
+			{
+				var playerCharactersData = state.EntityManager.GetBuffer<PlayerCharacterDataBuffer>(playerBattleDataEntity);
+				var playerCharacterPositions = state.EntityManager.GetBuffer<PlayerCharacterPositionBuffer>(playerBattleDataEntity);
+
+				// Spawn Characters
+				// For now, we will spawn the pre defined characters
+				var instances = new NativeArray<Entity>(BattleConstants.BATTLE_CHARACTER_COUNT, Allocator.Temp);
+				state.EntityManager.Instantiate(spawner.CharacterPrefab, instances);
+				for (int i = 0; i < BattleConstants.BATTLE_CHARACTER_COUNT; i++)
+				{
+					var characterData = playerCharactersData[i];
+					var characterPosition = playerCharacterPositions[i];
+					// var characterEntity = state.EntityManager.Instantiate(spawner.CharacterPrefab);
+					var transform = SystemAPI.GetComponentRW<LocalTransform>(instances[i]);
+					transform.ValueRW.Position = characterPosition.Position;
+					Debug.Log("Spawned character at " + characterPosition.Position);
+					Debug.Log("Character Data Id : " + characterData.Value.Id);
+				}
+			}
+
+			// Set the spawner status to None
+			spawnerStatus.Status = SpawnerStatus.None;
+			SystemAPI.SetSingleton(spawnerStatus);
+		//
+			// var battleDataContainer = SystemAPI.GetSingleton<BattleDataContainer>();
+			// var characterBundlesToSpawn = BattleDataContainer.Instance.CharacterBundlesToSpawn;
+			// if (characterBundlesToSpawn == null || characterBundlesToSpawn.Count == 0) 
+			// {
+			// 	Debug.Log("CharacterBundlesToSpawn is null or empty");
+			// 	spawner.Status = SpawnerStatus.None;
+			// 	SystemAPI.SetSingleton(spawner);
+			// 	return;
+			// }
+
+			// Debug.Log("Character Spawn Start");
+			// // Spawn the first character in the list
+			// var characterBundle = characterBundlesToSpawn[0];
+			// var characterStat = characterBundle.GetCharacterStat();
+			// var characterEntity = state.EntityManager.Instantiate(spawner.GetCharacterPrefab());
+			// // state.EntityManager.AddComponent(characterEntity, 
+			// // 	new HealthComponent { 
+			// // 		currentHealth = characterStat.Health, 
+			// // 		maxHealth = characterStat.Health });
+			// state.EntityManager.AddComponent<HealthComponent>(characterEntity);
+			// state.EntityManager.SetComponentData(characterEntity, 
 			// 	new HealthComponent { 
 			// 		currentHealth = characterStat.Health, 
 			// 		maxHealth = characterStat.Health });
-			state.EntityManager.AddComponent<HealthComponent>(characterEntity);
-			state.EntityManager.SetComponentData(characterEntity, 
-				new HealthComponent { 
-					currentHealth = characterStat.Health, 
-					maxHealth = characterStat.Health });
+			// // state.EntityManager.SetComponentData(characterEntity,
+			// // 	new ActGaugeComponent(characterStat.ActSpeed));
+			// state.EntityManager.AddComponent<ActGaugeComponent>(characterEntity);
 			// state.EntityManager.SetComponentData(characterEntity,
 			// 	new ActGaugeComponent(characterStat.ActSpeed));
-			state.EntityManager.AddComponent<ActGaugeComponent>(characterEntity);
-			state.EntityManager.SetComponentData(characterEntity,
-				new ActGaugeComponent(characterStat.ActSpeed));
-			var spawnPosition = spawner.GetNextPlayerCharacterSpawnPosition();
-			var transform = SystemAPI.GetComponentRW<LocalTransform>(characterEntity);
-			transform.ValueRW.Position = spawnPosition;
-			Debug.Log("Spawned character at " + spawnPosition);
-			characterBundlesToSpawn.RemoveAt(0);
-			SystemAPI.SetSingleton(spawner);
+			// var spawnPosition = spawner.GetNextPlayerCharacterSpawnPosition();
+			// var transform = SystemAPI.GetComponentRW<LocalTransform>(characterEntity);
+			// transform.ValueRW.Position = spawnPosition;
+			// Debug.Log("Spawned character at " + spawnPosition);
+			// characterBundlesToSpawn.RemoveAt(0);
+			// SystemAPI.SetSingleton(spawner);
 		}
 
 		private void ProcessSpawner(ref SystemState state, RefRW<CharacterSpawner> spawner)

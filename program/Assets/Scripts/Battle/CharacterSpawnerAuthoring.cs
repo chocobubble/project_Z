@@ -16,8 +16,18 @@ namespace Battle
 			Debug.Log("Baking CharacterSpawner");
 			var entity = GetEntity(TransformUsageFlags.None);
 			AddComponent(entity, 
-				new CharacterSpawner(
-					GetEntity(authoring.CharacterPrefab, TransformUsageFlags.Dynamic)));
+				new CharacterSpawner 
+				{
+					CharacterPrefab = GetEntity(authoring.CharacterPrefab, TransformUsageFlags.Dynamic)
+				});
+			
+			var spawnerStatusEntity = GetEntity(TransformUsageFlags.None);
+			AddComponent(spawnerStatusEntity, new CharacterSpawnerStatus { Status = SpawnerStatus.None });
 		}
+	}
+
+	public struct CharacterSpawnerStatus : IComponentData
+	{
+		public SpawnerStatus Status;
 	}
 }

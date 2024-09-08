@@ -33,7 +33,7 @@ namespace Battle
 	{
 		public void OnCreate(ref SystemState state) 
 		{
-			
+			state.RequireForUpdate<BattleSetup>();
 		}
 		public void OnDestroy(ref SystemState state) {}
 
@@ -54,15 +54,17 @@ namespace Battle
 					return;
 				}
 				Debug.Log("Battle Setup Start");
-				var characterSpawner = SystemAPI.GetSingleton<CharacterSpawner>();
-				characterSpawner.Status = SpawnerStatus.Spawning;
-				SystemAPI.SetSingleton<CharacterSpawner>(characterSpawner);
-				foreach (var characterBundle in PlayerDataContainer.Instance.GetCharacterBundles())
-				{
-					BattleDataContainer.Instance.CharacterBundlesToSpawn.Add(characterBundle);
-				}
+				var characterSpawnerStatus = SystemAPI.GetSingleton<CharacterSpawnerStatus>();
+				characterSpawnerStatus.Status = SpawnerStatus.Spawning;
+				SystemAPI.SetSingleton<CharacterSpawnerStatus>(characterSpawnerStatus);
+				// foreach (var characterBundle in PlayerDataContainer.Instance.GetCharacterBundles())
+				// {
+				// 	BattleDataContainer.Instance.CharacterBundlesToSpawn.Add(characterBundle);
+				// }
+				
 				battleSetup.BattleSetupStatus = BattleSetupStatus.Initializing;
 				SystemAPI.SetSingleton<BattleSetup>(battleSetup);
+				Debug.Log("BattleSetupSystem OnUpdate");
 			}
 		}
 	}
