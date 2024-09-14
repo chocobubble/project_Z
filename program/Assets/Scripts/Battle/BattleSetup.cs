@@ -9,7 +9,18 @@ namespace Battle
 	{
 		None,
 		Initializing,
+		Complete,
 	}
+
+	public enum BattleState 
+	{
+		None,
+		Setup,
+		Spawning,
+		Fighting,
+		Complete,
+	}
+
 	// Component to store battle setup data
 	public struct BattleSetup : IComponentData
 	{
@@ -27,6 +38,21 @@ namespace Battle
 		}
 	}
 
+	public struct BattleStateComponent : IComponentData
+	{
+		private BattleState battleState;
+		public BattleState BattleState
+		{
+			get {
+				// Debug.Log("Getting BattleSetupStatus as " + battleSetupStatus);
+				return battleState;
+			}
+			set {
+				Debug.Log("Setting BattleState to " + value);
+				battleState = value;
+			}
+		}
+	}
 
 	[BurstCompile]
 	public partial struct BattleSetupSystem : ISystem
@@ -65,6 +91,18 @@ namespace Battle
 				battleSetup.BattleSetupStatus = BattleSetupStatus.Initializing;
 				SystemAPI.SetSingleton<BattleSetup>(battleSetup);
 				Debug.Log("BattleSetupSystem OnUpdate");
+			}
+			else if (battleSetup.BattleSetupStatus == BattleSetupStatus.Initializing)
+			{
+				Debug.Log("Battle Setup Initializing");
+				// Initialize the battle setup
+				// For now, we will just set the battle state to setup
+				var battleStateComponent = SystemAPI.GetSingleton<BattleStateComponent>();
+				battleStateComponent.BattleState = BattleState.Fighting;
+				SystemAPI.SetSingleton<BattleStateComponent>(battleStateComponent);
+
+				battleSetup.BattleSetupStatus = BattleSetupStatus.Complete;
+				SystemAPI.SetSingleton<BattleSetup>(battleSetup);
 			}
 		}
 	}

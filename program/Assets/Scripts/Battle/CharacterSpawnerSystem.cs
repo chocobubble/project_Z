@@ -18,6 +18,7 @@ namespace Battle
 			state.RequireForUpdate<CharacterSpawnerStatus>();
 			state.RequireForUpdate<BattleConfig>();
 			state.RequireForUpdate<BattleSetup>();
+			state.RequireForUpdate<BattleState>();
 		}
 		public void OnDestroy(ref SystemState state) {}
 
@@ -82,8 +83,12 @@ namespace Battle
 			}
 
 			// Set the spawner status to None
-			spawnerStatus.Status = SpawnerStatus.None;
+			spawnerStatus.Status = SpawnerStatus.Complete;
 			SystemAPI.SetSingleton(spawnerStatus);
+
+			var battleStateComponent = SystemAPI.GetSingleton<BattleStateComponent>();
+			battleStateComponent.BattleState = BattleState.Fighting;
+
 		//
 			// var battleDataContainer = SystemAPI.GetSingleton<BattleDataContainer>();
 			// var characterBundlesToSpawn = BattleDataContainer.Instance.CharacterBundlesToSpawn;

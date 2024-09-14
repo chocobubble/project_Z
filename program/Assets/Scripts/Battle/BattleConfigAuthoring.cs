@@ -16,7 +16,9 @@ namespace Battle
 				var entity = GetEntity(authoring, TransformUsageFlags.None);
 				AddComponent(entity, new BattleConfig
 				{
-					CharacterPrefab = GetEntity(authoring.CharacterPrefab, TransformUsageFlags.None)
+					CharacterPrefab = GetEntity(authoring.CharacterPrefab, TransformUsageFlags.None),
+					TurnCount = 0,
+					TurnDurationSeconds = 3.0f
 				});
 			}
 		}
@@ -25,5 +27,7 @@ namespace Battle
 	public struct BattleConfig : IComponentData
 	{
 		public Entity CharacterPrefab;
+		public int TurnCount;
+		public float TurnDurationSeconds;
 	}
 }

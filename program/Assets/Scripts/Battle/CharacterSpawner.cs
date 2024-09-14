@@ -11,7 +11,8 @@ namespace Battle
 	{
 		None,
 		Waiting,
-		Spawning
+		Spawning,
+		Complete,
 	}
 
 	// Component to store spawner data

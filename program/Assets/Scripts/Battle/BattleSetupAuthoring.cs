@@ -17,6 +17,10 @@ namespace Battle
 			// BattleSetup Entity
 			var battleSetupEntity = GetEntity(TransformUsageFlags.None);
 			AddComponent(battleSetupEntity, new BattleSetup());
+			AddComponent(battleSetupEntity, new BattleStateComponent
+			{
+				BattleState = BattleState.None
+			});
 			
 			// Player Entity
 			var playerEntity = GetEntity(TransformUsageFlags.None);
