@@ -2,6 +2,7 @@ using Unity.Entities;
 using Unity.Burst;
 using UnityEngine;
 using Data;
+using Unity.Entities.UniversalDelegates;
 
 namespace Battle 
 {
@@ -91,12 +92,31 @@ namespace Battle
 				foreach (var (playerBattleData, playerBattleDataEntity) in SystemAPI.Query<PlayerBattleData>().WithEntityAccess()) 
 				{
 					playerCharactersData = state.EntityManager.GetBuffer<PlayerCharacterDataBuffer>(playerBattleDataEntity);
+					
+					// TODO: 이 체크 로직은 나중에 다른 곳으로 빼주자
+					if (playerCharactersData.Length == 0) 
+					{
+						Debug.Log("Player Characters Data is empty");
+						var battleStateComponent = SystemAPI.GetSingleton<BattleStateComponent>();
+						battleStateComponent.BattleState = BattleState.Complete;
+						SystemAPI.SetSingleton(battleStateComponent);
+						return;
+					}
 					playerCharacterDataBuffer = playerCharactersData[0];
 				}
 
 				foreach (var (enemyBattleData, enemyBattleDataEntity) in SystemAPI.Query<EnemyBattleData>().WithEntityAccess()) 
 				{
 					enemyCharactersData = state.EntityManager.GetBuffer<EnemyCharacterDataBuffer>(enemyBattleDataEntity);
+					// TODO: 이 체크 로직은 나중에 다른 곳으로 빼주자
+					if (enemyCharactersData.Length == 0) 
+					{
+						Debug.Log("Player Characters Data is empty");
+						var battleStateComponent = SystemAPI.GetSingleton<BattleStateComponent>();
+						battleStateComponent.BattleState = BattleState.Complete;
+						SystemAPI.SetSingleton(battleStateComponent);
+						return;
+					}
 					enemyCharacterDataBuffer = enemyCharactersData[0];
 				}
 				CharacterData playerCharacterData = playerCharacterDataBuffer.Value; 
@@ -121,6 +141,17 @@ namespace Battle
 
 					playerCharactersData[0] = playerCharacterDataBuffer;
 					enemyCharactersData[0] = enemyCharacterDataBuffer;
+
+					if (playerCharacterData.MaxHP <= 0) 
+					{
+						Debug.Log($"Player Character {playerCharacterData.Id} is dead");
+						playerCharactersData.RemoveAt(0);
+					}
+					if (enemyCharacterData.MaxHP <= 0) 
+					{
+						Debug.Log($"Enemy Character {enemyCharacterData.Id} is dead");
+						enemyCharactersData.RemoveAt(0);
+					}
 				}
 			}
 
