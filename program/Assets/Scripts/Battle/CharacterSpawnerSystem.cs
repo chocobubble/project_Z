@@ -18,7 +18,6 @@ namespace Battle
 			state.RequireForUpdate<CharacterSpawnerStatus>();
 			state.RequireForUpdate<BattleConfig>();
 			state.RequireForUpdate<BattleSetup>();
-			state.RequireForUpdate<BattleState>();
 		}
 		public void OnDestroy(ref SystemState state) {}
 
