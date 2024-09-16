@@ -84,19 +84,23 @@ namespace Battle
 				// Attack
 				isAttackFinished = true;
 
-				CharacterData playerCharacterData = default; 
-				CharacterData enemyCharacterData = default; 
+				PlayerCharacterDataBuffer playerCharacterDataBuffer = default;
+				EnemyCharacterDataBuffer enemyCharacterDataBuffer = default;
+				DynamicBuffer<PlayerCharacterDataBuffer> playerCharactersData = default;
+				DynamicBuffer<EnemyCharacterDataBuffer> enemyCharactersData = default;
 				foreach (var (playerBattleData, playerBattleDataEntity) in SystemAPI.Query<PlayerBattleData>().WithEntityAccess()) 
 				{
-					var playerCharactersData = state.EntityManager.GetBuffer<PlayerCharacterDataBuffer>(playerBattleDataEntity);
-					playerCharacterData = playerCharactersData[0].Value;
+					playerCharactersData = state.EntityManager.GetBuffer<PlayerCharacterDataBuffer>(playerBattleDataEntity);
+					playerCharacterDataBuffer = playerCharactersData[0];
 				}
 
 				foreach (var (enemyBattleData, enemyBattleDataEntity) in SystemAPI.Query<EnemyBattleData>().WithEntityAccess()) 
 				{
-					var enemyCharactersData = state.EntityManager.GetBuffer<EnemyCharacterDataBuffer>(enemyBattleDataEntity);
-					enemyCharacterData = enemyCharactersData[0].Value;
+					enemyCharactersData = state.EntityManager.GetBuffer<EnemyCharacterDataBuffer>(enemyBattleDataEntity);
+					enemyCharacterDataBuffer = enemyCharactersData[0];
 				}
+				CharacterData playerCharacterData = playerCharacterDataBuffer.Value; 
+				CharacterData enemyCharacterData = enemyCharacterDataBuffer.Value; 
 
 				if (playerCharacterData.Id == 0 || enemyCharacterData.Id == 0) 
 				{
@@ -111,6 +115,12 @@ namespace Battle
 					Debug.Log($"Enemy Character {enemyCharacterData.Id} attacked Player Character {playerCharacterData.Id}");
 					playerCharacterData.MaxHP -= enemyCharacterData.Attack;
 					Debug.Log($"Player Character {playerCharacterData.Id} HP : {playerCharacterData.MaxHP}");
+
+					playerCharacterDataBuffer.Value = playerCharacterData;	
+					enemyCharacterDataBuffer.Value = enemyCharacterData;	
+
+					playerCharactersData[0] = playerCharacterDataBuffer;
+					enemyCharactersData[0] = enemyCharacterDataBuffer;
 				}
 			}
 
