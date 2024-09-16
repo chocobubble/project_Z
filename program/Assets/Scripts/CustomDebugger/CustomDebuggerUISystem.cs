@@ -34,7 +34,8 @@ namespace CustomDebugger
 				Debug.Log("CustomDebuggerUISystem Initialized");
 			}
 
-			CharacterData[] playerCharacterDataList;
+			CharacterData[] playerCharacterDataList = null;
+			CharacterData[] enemyCharacterDataList = null;
 			foreach (var (characterData, entity) in SystemAPI.Query<PlayerBattleData>().WithEntityAccess())
 			{
 				var playerCharacterDataBuffer = state.EntityManager.GetBuffer<PlayerCharacterDataBuffer>(entity); 
@@ -43,16 +44,23 @@ namespace CustomDebugger
 				{
 					playerCharacterDataList[i] = playerCharacterDataBuffer[i].Value;
 				}
-				debuggerConfigManaged.CustomDebuggerUIController.UpdateCustomDebugger(playerCharacterDataList);
+			}
+			foreach (var (characterData, entity) in SystemAPI.Query<EnemyBattleData>().WithEntityAccess())
+			{
+				var enemyCharacterDataBuffer = state.EntityManager.GetBuffer<EnemyCharacterDataBuffer>(entity);
+				enemyCharacterDataList = new CharacterData[enemyCharacterDataBuffer.Length];
+				for (int i = 0; i < enemyCharacterDataBuffer.Length; i++)
+				{
+					enemyCharacterDataList[i] = enemyCharacterDataBuffer[i].Value;
+				}
 			}
 
-			// foreach (var (debuggerContent, entity) in SystemAPI.Query<RefRW<DebuggerContent>>().WithEntityAccess())
-			// {
-			// 	debuggerConfigManaged.CustomDebuggerUIController.UpdateCustomDebugger(debuggerContent.ValueRO.TextKey, debuggerContent.ValueRO.TextValue);
-			// 	UnityEngine.Debug.Log($"DebuggerContent: {debuggerContent.ValueRO.TextKey} - {debuggerContent.ValueRO.TextValue}");
-			// 	// Remove the DebuggerContent component after updating the UI
-			// 	state.EntityManager.RemoveComponent<DebuggerContent>(entity);	
-			// }
+			if (playerCharacterDataList == null || enemyCharacterDataList == null)
+			{
+				Debug.LogError("PlayerCharacterDataList or EnemyCharacterDataList is null");
+				return;
+			}
+			debuggerConfigManaged.CustomDebuggerUIController.UpdateCustomDebugger(playerCharacterDataList, enemyCharacterDataList);
 		}
 	}
 }

@@ -19,12 +19,17 @@ public class CustomDebuggerUIController : MonoBehaviour
 
 	}
 
-  	public void UpdateCustomDebugger(CharacterData[] characterDataList)
+  	public void UpdateCustomDebugger(CharacterData[] playerCharacterDataList, CharacterData[] enemyCharacterDataList)
 	{
-		debugText = "";
-		foreach (var characterData in characterDataList)
+		debugText = "Player Characters:";
+		foreach (var characterData in playerCharacterDataList)
 		{
-			debugText += $"{characterData.Id} : {characterData.MaxHP}, {characterData.Attack}\n";
+			debugText += $"{characterData.Id} ({characterData.MaxHP}, {characterData.Attack}) "; 
+		}
+		debugText += "\nEnemy Characters:";
+		foreach (var characterData in enemyCharacterDataList)
+		{
+			debugText += $"{characterData.Id} ({characterData.MaxHP}, {characterData.Attack}) "; 
 		}
 		UpdateText();
 	}

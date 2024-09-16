@@ -48,7 +48,7 @@ namespace Battle
 				return battleState;
 			}
 			set {
-				Debug.Log("Setting BattleState to " + value);
+				// Debug.Log("Setting BattleState to " + value);
 				battleState = value;
 			}
 		}
