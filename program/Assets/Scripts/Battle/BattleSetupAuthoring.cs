@@ -78,4 +78,9 @@ namespace Battle
 	{
 
 	}
+
+	public struct CharacterPositionIndex : IComponentData
+	{
+		public int Index;
+	}
 }

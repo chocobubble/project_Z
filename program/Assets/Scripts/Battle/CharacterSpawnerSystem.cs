@@ -39,6 +39,7 @@ namespace Battle
 
 			var spawner = SystemAPI.GetSingleton<CharacterSpawner>();
 
+			var ecb = new EntityCommandBuffer(Allocator.Temp);
 			Debug.Log("Player Characters Spawn Start");
 			foreach (var (playerBattleData, playerBattleDataEntity) in SystemAPI.Query<PlayerBattleData>().WithEntityAccess()) 
 			{
@@ -55,8 +56,25 @@ namespace Battle
 					var characterPosition = playerCharacterPositions[i];
 					var transform = SystemAPI.GetComponentRW<LocalTransform>(instances[i]);
 					transform.ValueRW.Position = characterPosition.Position;
-					Debug.Log("Spawned character at " + characterPosition.Position);
-					Debug.Log("Character Data Id : " + characterData.Value.Id);
+					{
+						// var directory = SystemAPI.ManagedAPI.GetSingleton<DirectoryManaged>();
+						// var ecb = new EntityCommandBuffer(Allocator.Temp);
+
+						// // Instantiate the associated GameObject from the prefab.
+						// foreach (var (goPrefab, entity) in
+						// 		SystemAPI.Query<RotationSpeed>()
+						// 			.WithNone<RotatorGO>()
+						// 			.WithEntityAccess())
+						// {
+						// 	var go = GameObject.Instantiate(directory.RotatorPrefab);
+
+						// 	// We can't add components to entities as we iterate over them, so we defer the change with an ECB.
+						// 	ecb.AddComponent(entity, new RotatorGO(go));
+						// }
+
+						// ecb.Playback(state.EntityManager);
+						ecb.AddComponent(instances[i], new CharacterPositionIndex { Index = i });
+					}
 				}
 			}
 
@@ -76,10 +94,14 @@ namespace Battle
 					var characterPosition = enemyCharacterPositions[i];
 					var transform = SystemAPI.GetComponentRW<LocalTransform>(instances[i]);
 					transform.ValueRW.Position = characterPosition.Position;
-					Debug.Log("Spawned character at " + characterPosition.Position);
-					Debug.Log("Character Data Id : " + characterData.Value.Id);
+					// Debug.Log("Spawned character at " + characterPosition.Position);
+					// Debug.Log("Character Data Id : " + characterData.Value.Id);
+
+					ecb.AddComponent(instances[i], new CharacterPositionIndex { Index = i });
 				}
 			}
+
+			ecb.Playback(state.EntityManager);
 
 			// Set the spawner status to None
 			spawnerStatus.Status = SpawnerStatus.Complete;

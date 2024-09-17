@@ -23,6 +23,13 @@ namespace Battle
 			
 			var spawnerStatusEntity = GetEntity(TransformUsageFlags.None);
 			AddComponent(spawnerStatusEntity, new CharacterSpawnerStatus { Status = SpawnerStatus.None });
+
+			// GO & Transform Entities
+			for (int i = 0; i < BattleConstants.BATTLE_CHARACTER_COUNT; i++)
+			{
+				var playerCharacterEntity = GetEntity(TransformUsageFlags.Dynamic);
+				AddComponent(playerCharacterEntity, new CharacterPositionIndex { Index = i });
+			}
 		}
 	}
 
