@@ -20,6 +20,14 @@ namespace Battle
 					TurnCount = 0,
 					TurnDurationSeconds = 3.0f
 				});
+				AddComponent(entity, new BattleStateComponent
+				{
+					BattleState = BattleState.None
+				});
+				AddComponent(entity, new TurnPhaseComponent
+				{
+					TurnPhase = TurnPhase.None
+				});
 			}
 		}
 	}
@@ -29,5 +37,42 @@ namespace Battle
 		public Entity CharacterPrefab;
 		public int TurnCount;
 		public float TurnDurationSeconds;
+	}
+		
+	public enum BattleState  { None, Setup, Start, End, }
+
+	public enum TurnPhase { None, Spawning, PreAttack, Attack, PostAttack, }
+
+		// Component to store battle setup data
+	public struct BattleStateComponent : IComponentData
+	{
+		private BattleState battleState;
+		public BattleState BattleState
+		{
+			get {
+				// Debug.Log("Getting BattleSetupStatus as " + battleSetupStatus);
+				return battleState;
+			}
+			set {
+				// Debug.Log("Setting BattleState to " + value);
+				battleState = value;
+			}
+		}
+	}
+
+	public struct TurnPhaseComponent : IComponentData
+	{
+		private TurnPhase turnPhase;
+		public TurnPhase TurnPhase
+		{
+			get {
+				// Debug.Log("Getting BattleSetupStatus as " + battleSetupStatus);
+				return turnPhase;
+			}
+			set {
+				// Debug.Log("Setting BattleState to " + value);
+				turnPhase = value;
+			}
+		}
 	}
 }

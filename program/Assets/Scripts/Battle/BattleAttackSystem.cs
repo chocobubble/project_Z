@@ -7,7 +7,7 @@ using Unity.Entities.UniversalDelegates;
 namespace Battle 
 {
 	[BurstCompile]
-	public partial struct BattleFightSystem : ISystem 
+	public partial struct BattleAttackSystem : ISystem 
 	{
 		float currentTurnTime;
 		float currentTurn;
@@ -16,7 +16,7 @@ namespace Battle
 		[BurstCompile]
 		public void OnCreate(ref SystemState state) 
 		{
-			state.RequireForUpdate<BattleFight>();
+			state.RequireForUpdate<BattleAttack>();
 
 			// 
 			{
@@ -25,47 +25,28 @@ namespace Battle
 				isAttackFinished = false;
 			}
 
-			Debug.Log("BattleFightSystem Created");
+			Debug.Log("BattleAttackSystem Created");
 		}
 
 		public void OnDestroy(ref SystemState state) 
 		{
-			Debug.Log("BattleFightSystem Destroyed");
+			Debug.Log("BattleAttackSystem Destroyed");
 		}
 
 		[BurstCompile]
 		public void OnUpdate(ref SystemState state) 
 		{
-			// Debug.Log("Battle Fight Start");
-
-			var battleStateComponent = SystemAPI.GetSingleton<BattleStateComponent>();
-			var battleState = battleStateComponent.BattleState;
-			switch (battleState)
+			var turnPhase = SystemAPI.GetSingleton<TurnPhaseComponent>().TurnPhase;
+			if (turnPhase != TurnPhase.Attack) 
 			{
-				case BattleState.None:
-					// Debug.Log("Battle Fight None");
-					break;
-				case BattleState.Setup:
-					// Debug.Log("Battle Fight Setup");
-					break;
-				case BattleState.Spawning:
-					// Debug.Log("Battle Fight Spawning");
-					break;
-				case BattleState.Fighting:
-					// Debug.Log("Battle Fight Fighting");
-					Fight(ref state);
-					break;
-				case BattleState.Complete:
-					// Debug.Log("Battle Fight Complete");
-					break;
-				default:
-					// Debug.Log("Battle Fight Default");
-					break;
-			}			
+				return;
+			}
+			Attack(ref state);
+
 		}
 
 		[BurstCompile]
-		private void Fight(ref SystemState state)
+		private void Attack(ref SystemState state)
 		{
 			// Debug.Log("Fighting");
 			var BattleConfig = SystemAPI.GetSingleton<BattleConfig>();
@@ -97,9 +78,9 @@ namespace Battle
 					if (playerCharactersData.Length == 0) 
 					{
 						Debug.Log("Player Characters Data is empty");
-						var battleStateComponent = SystemAPI.GetSingleton<BattleStateComponent>();
-						battleStateComponent.BattleState = BattleState.Complete;
-						SystemAPI.SetSingleton(battleStateComponent);
+						var turnPhaseComponent = SystemAPI.GetSingleton<turnPhaseComponent>();
+						turnPhaseComponent.TurnPhase = TurnPhase.End;
+						SystemAPI.SetSingleton(turnPhaseComponent);
 						return;
 					}
 					playerCharacterDataBuffer = playerCharactersData[0];
@@ -112,9 +93,9 @@ namespace Battle
 					if (enemyCharactersData.Length == 0) 
 					{
 						Debug.Log("Player Characters Data is empty");
-						var battleStateComponent = SystemAPI.GetSingleton<BattleStateComponent>();
-						battleStateComponent.BattleState = BattleState.Complete;
-						SystemAPI.SetSingleton(battleStateComponent);
+						var turnPhaseComponent = SystemAPI.GetSingleton<turnPhaseComponent>();
+						turnPhaseComponent.TurnPhase = TurnPhase.End;
+						SystemAPI.SetSingleton(turnPhaseComponent);
 						return;
 					}
 					enemyCharacterDataBuffer = enemyCharactersData[0];
@@ -154,9 +135,6 @@ namespace Battle
 					}
 				}
 			}
-
-
 		}
-
 	}
 }
