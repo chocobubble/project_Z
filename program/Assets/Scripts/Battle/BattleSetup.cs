@@ -14,14 +14,14 @@ namespace Battle
 		public void OnCreate(ref SystemState state) 
 		{
 			state.RequireForUpdate<BattleSetup>();
-			state.RequireForUpdate<BattleState>();
+			state.RequireForUpdate<BattleStateComponent>();
 		}
 		public void OnDestroy(ref SystemState state) {}
 
 		// [BurstCompile]
 		public void OnUpdate(ref SystemState state)
 		{
-			if (SystemAPI.HasSingleton<BattleState>() == false) 
+			if (SystemAPI.HasSingleton<BattleStateComponent>() == false) 
 			{
 				Debug.LogError("BattleSetup component is null");
 				return;
@@ -33,19 +33,19 @@ namespace Battle
 			} 
 
 			// TODO : 아래 작업 마무리 못했음 
-			Debug.Log("Battle Setup Start");
-			if (SystemAPI.HasSingleton<CharacterSpawner>() == false)
-			{
-				Debug.LogError("CharacterSpawner component is null");
-				return;
-			}
-			var characterSpawnerStatus = SystemAPI.GetSingleton<CharacterSpawnerStatus>();
-			characterSpawnerStatus.Status = SpawnerStatus.Spawning;
-			SystemAPI.SetSingleton<CharacterSpawnerStatus>(characterSpawnerStatus);
+			// Debug.Log("Battle Setup Start");
+			// if (SystemAPI.HasSingleton<CharacterSpawner>() == false)
+			// {
+			// 	Debug.LogError("CharacterSpawner component is null");
+			// 	return;
+			// }
+			// var characterSpawnerStatus = SystemAPI.GetSingleton<CharacterSpawnerStatus>();
+			// characterSpawnerStatus.Status = SpawnerStatus.Spawning;
+			// SystemAPI.SetSingleton<CharacterSpawnerStatus>(characterSpawnerStatus);
 			
-			// battleSetup.BattleSetupStatus = BattleSetupStatus.Initializing;
-			// SystemAPI.SetSingleton<BattleSetup>(battleSetup);
-			Debug.Log("BattleSetupSystem OnUpdate");
+			// // battleSetup.BattleSetupStatus = BattleSetupStatus.Initializing;
+			// // SystemAPI.SetSingleton<BattleSetup>(battleSetup);
+			// Debug.Log("BattleSetupSystem OnUpdate");
 		}
 	}
 }

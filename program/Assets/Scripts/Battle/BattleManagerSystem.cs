@@ -1,6 +1,8 @@
 using Unity.Entities;
 using Unity.Burst;
 using UnityEngine;
+using Data;
+using Unity.Entities.UniversalDelegates;
 
 namespace Battle 
 {
@@ -11,13 +13,15 @@ namespace Battle
 		public void OnCreate(ref SystemState state) 
 		{
 			state.RequireForUpdate<BattleManager>();
+			state.RequireForUpdate<BattleStateComponent>();
+			state.RequireForUpdate<TurnPhaseComponent>();	
 		}
 
 		public void OnDestroy(ref SystemState state) 
 		{
 		}
 
-		[BurstCompile]
+		// [BurstCompile]
 		public void OnUpdate(ref SystemState state) 
 		{
 			var battleState = SystemAPI.GetSingleton<BattleStateComponent>().BattleState;
@@ -34,6 +38,30 @@ namespace Battle
 				{
 					Debug.Log("Set TurnPhase to Spawning from None");
 					SystemAPI.SetSingleton(new TurnPhaseComponent { TurnPhase = TurnPhase.Spawning });
+
+					// put character data to spawn
+					{
+						var characterSpawnerComponent = SystemAPI.GetSingleton<CharacterSpawnerComponent>();
+						var spawnerEntity = SystemAPI.GetSingletonEntity<CharacterSpawnerComponent>();
+						var spawnerDataComponent = state.EntityManager.GetComponentObject<CharacterSpawnerDataComponent>(spawnerEntity);
+						for (int i = 0; i < BattleConstants.playerCharactersData.Length; i++)
+						{
+							spawnerDataComponent.CharacterDataCount++;
+							spawnerDataComponent.CharacterDataListToSpawn[i] = BattleConstants.playerCharactersData[i];
+							spawnerDataComponent.CharacterPositionListToSpawn[i] = BattleConstants.playerCharacterPositions[i]; 
+						}
+
+						for (int i = BattleConstants.playerCharactersData.Length; i < BattleConstants.enemyCharactersData.Length + BattleConstants.playerCharactersData.Length; i++)
+						{
+							int j = i - BattleConstants.playerCharactersData.Length;
+							spawnerDataComponent.CharacterDataCount++;
+							spawnerDataComponent.CharacterDataListToSpawn[i] = BattleConstants.enemyCharactersData[j];
+							spawnerDataComponent.CharacterPositionListToSpawn[i] = BattleConstants.enemyCharacterPositions[j]; 
+						}
+
+						characterSpawnerComponent.HasToSpawn = true;
+						SystemAPI.SetSingleton<CharacterSpawnerComponent>(characterSpawnerComponent);
+					}
 				}
 			}
 

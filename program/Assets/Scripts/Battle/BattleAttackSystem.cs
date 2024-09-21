@@ -78,8 +78,8 @@ namespace Battle
 					if (playerCharactersData.Length == 0) 
 					{
 						Debug.Log("Player Characters Data is empty");
-						var turnPhaseComponent = SystemAPI.GetSingleton<turnPhaseComponent>();
-						turnPhaseComponent.TurnPhase = TurnPhase.End;
+						var turnPhaseComponent = SystemAPI.GetSingleton<TurnPhaseComponent>();
+						turnPhaseComponent.TurnPhase = TurnPhase.None;
 						SystemAPI.SetSingleton(turnPhaseComponent);
 						return;
 					}
@@ -93,8 +93,8 @@ namespace Battle
 					if (enemyCharactersData.Length == 0) 
 					{
 						Debug.Log("Player Characters Data is empty");
-						var turnPhaseComponent = SystemAPI.GetSingleton<turnPhaseComponent>();
-						turnPhaseComponent.TurnPhase = TurnPhase.End;
+						var turnPhaseComponent = SystemAPI.GetSingleton<TurnPhaseComponent>();
+						turnPhaseComponent.TurnPhase = TurnPhase.None;
 						SystemAPI.SetSingleton(turnPhaseComponent);
 						return;
 					}

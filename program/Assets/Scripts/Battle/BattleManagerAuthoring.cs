@@ -1,9 +1,10 @@
+using Data;
 using Unity.Entities;
 using UnityEngine;
 
 namespace Battle
 {
-	class BattleManager : Baker<BattleManagerAuthoring>
+	class BattleManagerBaker : Baker<BattleManagerAuthoring>
 	{
 		public override void Bake(BattleManagerAuthoring authoring)
 		{
