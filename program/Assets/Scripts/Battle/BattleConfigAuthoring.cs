@@ -18,7 +18,8 @@ namespace Battle
 				{
 					CharacterPrefab = GetEntity(authoring.CharacterPrefab, TransformUsageFlags.None),
 					TurnCount = 0,
-					TurnDurationSeconds = 3.0f
+					TurnDurationSeconds = 3.0f,
+					ShouldCharactersPositionUpdate = false
 				});
 				AddComponent(entity, new BattleStateComponent
 				{
@@ -37,6 +38,7 @@ namespace Battle
 		public Entity CharacterPrefab;
 		public int TurnCount;
 		public float TurnDurationSeconds;
+		public bool ShouldCharactersPositionUpdate;
 	}
 		
 	public enum BattleState  { None, Setup, Start, End, }

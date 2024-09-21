@@ -33,7 +33,7 @@ namespace Data
 				Id = 1,
 				Level = 1,
 				MaxHP = 4,
-				Attack = 1
+				Attack = 2 
 			},
 			new CharacterData
 			{
@@ -66,7 +66,7 @@ namespace Data
 				Id = 5,
 				Level = 1,
 				MaxHP = 4,
-				Attack = 1
+				Attack = 2
 			},
 			new CharacterData
 			{

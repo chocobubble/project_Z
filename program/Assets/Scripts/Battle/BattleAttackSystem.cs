@@ -6,7 +6,7 @@ using Unity.Entities.UniversalDelegates;
 
 namespace Battle 
 {
-	[BurstCompile]
+	[UpdateAfter(typeof(BattleManagerSystem))]
 	public partial struct BattleAttackSystem : ISystem 
 	{
 		float currentTurnTime;
@@ -123,15 +123,24 @@ namespace Battle
 					playerCharactersData[0] = playerCharacterDataBuffer;
 					enemyCharactersData[0] = enemyCharacterDataBuffer;
 
+					bool shouldCharactersPositionUpdate = false;
 					if (playerCharacterData.MaxHP <= 0) 
 					{
 						Debug.Log($"Player Character {playerCharacterData.Id} is dead");
 						playerCharactersData.RemoveAt(0);
+						shouldCharactersPositionUpdate = true;
 					}
 					if (enemyCharacterData.MaxHP <= 0) 
 					{
 						Debug.Log($"Enemy Character {enemyCharacterData.Id} is dead");
 						enemyCharactersData.RemoveAt(0);
+						shouldCharactersPositionUpdate = true;
+					}
+					if (shouldCharactersPositionUpdate) 
+					{
+						var battleConfig = SystemAPI.GetSingleton<BattleConfig>();
+						battleConfig.ShouldCharactersPositionUpdate = true;
+						SystemAPI.SetSingleton(battleConfig);
 					}
 				}
 			}

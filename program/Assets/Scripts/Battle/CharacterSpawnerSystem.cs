@@ -39,6 +39,20 @@ namespace Battle
 			var spawnerEntity = SystemAPI.GetSingletonEntity<CharacterSpawnerComponent>();
 			var spawnerDataComponent = state.EntityManager.GetComponentObject<CharacterSpawnerDataComponent>(spawnerEntity); 
 
+			// delete existing characters
+			{
+				var ecb2 = new EntityCommandBuffer(Allocator.Temp);
+				var entities = state.EntityManager.GetAllEntities();
+				foreach (var entity in entities)
+				{
+					if (state.EntityManager.HasComponent<CharacterPositionIndex>(entity))
+					{
+						ecb2.DestroyEntity(entity);
+					}
+				}
+				ecb2.Playback(state.EntityManager);
+			}
+
 			var ecb = new EntityCommandBuffer(Allocator.Temp);
 			Debug.Log("Player Characters Spawn Start");
 			for (var i = 0; i < spawnerDataComponent.CharacterDataCount; i++) 
