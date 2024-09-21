@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections.Generic;
 using Data;
+using Battle;
 
 namespace CustomDebugger 
 {
@@ -17,6 +18,12 @@ public class CustomDebuggerUIController : MonoBehaviour
 
 		debugLabel = root.Q<Label>("debug-label");
 
+	}
+
+	public void UpdateCustomDebugger(BattleState battleState, TurnPhase turnPhase)	
+	{
+		debugText = $"Battle State: {battleState}, Turn Phase: {turnPhase}";
+		UpdateText();
 	}
 
   	public void UpdateCustomDebugger(CharacterData[] playerCharacterDataList, CharacterData[] enemyCharacterDataList)

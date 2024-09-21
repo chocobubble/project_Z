@@ -17,70 +17,11 @@ namespace Battle
 			// BattleSetup Entity
 			var battleSetupEntity = GetEntity(TransformUsageFlags.None);
 			AddComponent(battleSetupEntity, new BattleSetup());
-			AddComponent(battleSetupEntity, new BattleStateComponent
-			{
-				BattleState = BattleState.None
-			});
-			
-			// Player Entity
-			var playerEntity = GetEntity(TransformUsageFlags.None);
-			AddComponent(playerEntity, new PlayerBattleData());
-		
-			// Set up the buffer for player and enemy characters
-			var playerCharacters = AddBuffer<PlayerCharacterDataBuffer>(playerEntity);
-
-			for (int i = 0; i < BattleConstants.BATTLE_CHARACTER_COUNT; i++)
-			{
-				playerCharacters.Add(new PlayerCharacterDataBuffer
-				{
-					Value = BattleConstants.playerCharactersData[i]
-				});
-			}
-
-			var playerCharacterPositions = AddBuffer<PlayerCharacterPositionBuffer>(playerEntity);
-
-			for (int i = 0; i < BattleConstants.BATTLE_CHARACTER_COUNT; i++)
-			{
-				playerCharacterPositions.Add(new PlayerCharacterPositionBuffer
-				{
-					Position = BattleConstants.playerCharacterPositions[i]
-				});
-			}
-
-			var enemyEntity = GetEntity(TransformUsageFlags.None);
-			AddComponent(enemyEntity, new EnemyBattleData());
-			var enemyCharacters = AddBuffer<EnemyCharacterDataBuffer>(enemyEntity);
-			for (int i = 0; i < BattleConstants.BATTLE_CHARACTER_COUNT; i++)
-			{
-				enemyCharacters.Add(new EnemyCharacterDataBuffer
-				{
-					Value = BattleConstants.enemyCharactersData[i]
-				});
-			}
-
-			var enemyCharacterPositions = AddBuffer<EnemyCharacterPositionBuffer>(enemyEntity);
-			for (int i = 0; i < BattleConstants.BATTLE_CHARACTER_COUNT; i++)
-			{
-				enemyCharacterPositions.Add(new EnemyCharacterPositionBuffer
-				{
-					Position = BattleConstants.enemyCharacterPositions[i]
-				});
-			}
 		}
 	}
 
-	public struct PlayerBattleData : IComponentData
-	{
 
-	}
 
-	public struct EnemyBattleData : IComponentData
-	{
 
-	}
-
-	public struct CharacterPositionIndex : IComponentData
-	{
-		public int Index;
-	}
+	public struct BattleSetup : IComponentData { }
 }

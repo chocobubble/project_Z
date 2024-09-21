@@ -1,6 +1,8 @@
 using UnityEngine;
 using Unity.Entities;
 using Data;
+using Unity.Mathematics;
+using System;
 
 namespace Battle
 {
@@ -21,20 +23,56 @@ namespace Battle
 					CharacterPrefab = GetEntity(authoring.CharacterPrefab, TransformUsageFlags.Dynamic)
 				});
 			
-			var spawnerStatusEntity = GetEntity(TransformUsageFlags.None);
-			AddComponent(spawnerStatusEntity, new CharacterSpawnerStatus { Status = SpawnerStatus.None });
+			var spawnerEntity = GetEntity(TransformUsageFlags.None);
+			AddComponent(spawnerEntity, 
+				new CharacterSpawnerComponent 
+				{ 
+					SpawnerState = SpawnerState.None,
+					HasToSpawn = false
+				});
+			// var spawnerDataEntity = GetEntity(TransformUsageFlags.None);
+			AddComponentObject(spawnerEntity,
+				new CharacterSpawnerDataComponent()
+				{
+					CharacterDataCount = 0,
+					CharacterDataListToSpawn = new CharacterData[SpawnerConstants.MAX_SPAWN_DATA_COUNT],
+					CharacterPositionListToSpawn = new float3[SpawnerConstants.MAX_SPAWN_DATA_COUNT]
+				}
+				
+				);
 
-			// GO & Transform Entities
-			for (int i = 0; i < BattleConstants.BATTLE_CHARACTER_COUNT; i++)
+			// TODO : 임시이므로 나중에 다른 곳으로 옮겨야 함
 			{
-				var playerCharacterEntity = GetEntity(TransformUsageFlags.Dynamic);
-				AddComponent(playerCharacterEntity, new CharacterPositionIndex { Index = i });
+				// GO & Transform Entities
+				// for (int i = 0; i < BattleConstants.BATTLE_CHARACTER_COUNT; i++)
+				// {
+				// 	var playerCharacterEntity = GetEntity(TransformUsageFlags.Dynamic);
+				// 	AddComponent(playerCharacterEntity, new CharacterPositionIndex { Index = i });
+				// }
 			}
 		}
 	}
 
-	public struct CharacterSpawnerStatus : IComponentData
+	public enum SpawnerState
 	{
-		public SpawnerStatus Status;
+		None,
+		Waiting,
+		Spawning,
+		Complete,
+	}
+
+	public struct CharacterSpawnerComponent : IComponentData
+	{
+		public SpawnerState SpawnerState;
+		public bool HasToSpawn;
+		// public DynamicBuffer<CharacterData> characterDataListToSpawn;
+		// public DynamicBuffer<float3> characterPositionListToSpawn;
+	}
+
+	public class CharacterSpawnerDataComponent : IComponentData
+	{
+		public int CharacterDataCount;
+		public CharacterData[] CharacterDataListToSpawn;
+		public float3[] CharacterPositionListToSpawn;
 	}
 }

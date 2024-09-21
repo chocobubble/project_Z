@@ -7,13 +7,7 @@ using Unity.Collections;
 
 namespace Battle
 {
-	public enum SpawnerStatus
-	{
-		None,
-		Waiting,
-		Spawning,
-		Complete,
-	}
+
 
 	// Component to store spawner data
 	public struct CharacterSpawner : IComponentData
