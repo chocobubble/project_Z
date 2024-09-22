@@ -3,6 +3,7 @@ using Unity.Entities;
 using Data;
 using Unity.Mathematics;
 using System;
+using Unity.Collections;
 
 namespace Battle
 {
@@ -40,16 +41,17 @@ namespace Battle
 				}
 				
 				);
-
-			// TODO : 임시이므로 나중에 다른 곳으로 옮겨야 함
-			{
-				// GO & Transform Entities
-				// for (int i = 0; i < BattleConstants.BATTLE_CHARACTER_COUNT; i++)
-				// {
-				// 	var playerCharacterEntity = GetEntity(TransformUsageFlags.Dynamic);
-				// 	AddComponent(playerCharacterEntity, new CharacterPositionIndex { Index = i });
-				// }
-			}
+			AddComponentObject(spawnerEntity,
+				new CharacterSpawnerDataInBattleComponent()
+				{
+					PlayerCharacterDataCount = 0,
+					EnemyCharacterDataCount = 0,
+					PlayerCharacterDataListToSpawn = new CharacterData[SpawnerConstants.MAX_SPAWN_DATA_COUNT],
+					EnemyCharacterDataListToSpawn = new CharacterData[SpawnerConstants.MAX_SPAWN_DATA_COUNT],
+					PlayerCharacterPositionListToSpawn = new float3[SpawnerConstants.MAX_SPAWN_DATA_COUNT],
+					EnemyCharacterPositionListToSpawn = new float3[SpawnerConstants.MAX_SPAWN_DATA_COUNT]
+				}
+			);
 		}
 	}
 
@@ -74,5 +76,16 @@ namespace Battle
 		public int CharacterDataCount;
 		public CharacterData[] CharacterDataListToSpawn;
 		public float3[] CharacterPositionListToSpawn;
+	}
+
+	public class CharacterSpawnerDataInBattleComponent : IComponentData
+	{
+		public int PlayerCharacterDataCount;
+		public int EnemyCharacterDataCount;
+		public CharacterData[] PlayerCharacterDataListToSpawn;
+		public CharacterData[] EnemyCharacterDataListToSpawn;
+		public float3[] PlayerCharacterPositionListToSpawn;
+		public float3[] EnemyCharacterPositionListToSpawn;
+
 	}
 }

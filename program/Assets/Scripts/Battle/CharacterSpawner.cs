@@ -26,13 +26,13 @@ namespace Battle
 		// private float3[] PlayerCharacterSpawnPositions
 		// {
 		// 	get {
-		// 		return Data.BattleConstants.playerCharacterPositions;
+		// 		return Data.BattleConstants.PLAYER_CHARACTER_POSITIONS;
 		// 	}
 		// }
 		// private float3[] EnemyCharacterSpawnPositions
 		// {
 		// 	get {
-		// 		return Data.BattleConstants.enemyCharacterPositions;
+		// 		return Data.BattleConstants.ENEMY_CHARACTER_POSITIONS;
 		// 	}
 		// }
 		// public int PlayerCharacterSpawnIndex;

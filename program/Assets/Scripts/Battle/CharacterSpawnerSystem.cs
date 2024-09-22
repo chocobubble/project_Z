@@ -5,6 +5,7 @@ using UnityEngine;
 using Data;
 using Unity.Collections;
 using Unity.Mathematics;
+using System.Threading.Tasks;
 
 namespace Battle
 {
@@ -37,6 +38,14 @@ namespace Battle
 			}
 
 			Debug.Log("CharacterSpawnerSystem OnUpdate");
+			var battleStateComponent = SystemAPI.GetSingleton<BattleStateComponent>();
+			if (battleStateComponent.BattleState == BattleState.Start)
+			{
+				SpawnCharactersOnBattle(ref state);
+				return;
+			}	
+
+
 			var spawner = SystemAPI.GetSingleton<CharacterSpawner>();
 			var spawnerEntity = SystemAPI.GetSingletonEntity<CharacterSpawnerComponent>();
 			var spawnerDataComponent = state.EntityManager.GetComponentObject<CharacterSpawnerDataComponent>(spawnerEntity); 
@@ -101,27 +110,27 @@ namespace Battle
 			
 			foreach (var (playerBattleData, playerBattleDataEntity) in SystemAPI.Query<PlayerBattleData>().WithEntityAccess()) 
 			{
-				var playerCharactersData = state.EntityManager.GetBuffer<PlayerCharacterDataBuffer>(playerBattleDataEntity);
-				for (int i = 0; i < playerCharactersData.Length; i++)
+				var PLAYER_CHARACTERS_DATA = state.EntityManager.GetBuffer<PlayerCharacterDataBuffer>(playerBattleDataEntity);
+				for (int i = 0; i < PLAYER_CHARACTERS_DATA.Length; i++)
 				{
 					Debug.Log("Character Data Count : " + spawnerDataComponent.CharacterDataCount);
 					spawnerDataComponent.CharacterDataCount++;
-					spawnerDataComponent.CharacterDataListToSpawn[i] = playerCharactersData[i].Value;
-					spawnerDataComponent.CharacterPositionListToSpawn[i] = BattleConstants.playerCharacterPositions[i];
+					spawnerDataComponent.CharacterDataListToSpawn[i] = PLAYER_CHARACTERS_DATA[i].Value;
+					spawnerDataComponent.CharacterPositionListToSpawn[i] = BattleConstants.PLAYER_CHARACTER_POSITIONS[i];
 				}
 			}
 
 			foreach (var (enemyBattleData, enemyBattleDataEntity) in SystemAPI.Query<EnemyBattleData>().WithEntityAccess()) 
 			{
-				var enemyCharactersData = state.EntityManager.GetBuffer<EnemyCharacterDataBuffer>(enemyBattleDataEntity);
+				var ENEMY_CHARACTERS_DATA = state.EntityManager.GetBuffer<EnemyCharacterDataBuffer>(enemyBattleDataEntity);
 				int j = spawnerDataComponent.CharacterDataCount;
-				for (int i = j; i < enemyCharactersData.Length + j; i++)
+				for (int i = j; i < ENEMY_CHARACTERS_DATA.Length + j; i++)
 				{
 					Debug.Log("Character Data Count : " + spawnerDataComponent.CharacterDataCount);
 					int k = i - j;
 					spawnerDataComponent.CharacterDataCount++;
-					spawnerDataComponent.CharacterDataListToSpawn[i] = enemyCharactersData[k].Value;
-					spawnerDataComponent.CharacterPositionListToSpawn[i] = BattleConstants.enemyCharacterPositions[k];
+					spawnerDataComponent.CharacterDataListToSpawn[i] = ENEMY_CHARACTERS_DATA[k].Value;
+					spawnerDataComponent.CharacterPositionListToSpawn[i] = BattleConstants.ENEMY_CHARACTER_POSITIONS[k];
 				}
 			}
 			
@@ -132,6 +141,67 @@ namespace Battle
 		private void ProcessSpawner(ref SystemState state, RefRW<CharacterSpawner> spawner)
 		{
 			
+		}
+
+		private void SpawnCharactersOnBattle(ref SystemState state)
+		{
+			var entity = SystemAPI.GetSingletonEntity<CharacterSpawnerComponent>();
+			var characterSpawnerDataInBattleComponent = state.EntityManager.GetComponentObject<CharacterSpawnerDataInBattleComponent>(entity);
+			var playerCharacterDataListToSpawn = characterSpawnerDataInBattleComponent.PlayerCharacterDataListToSpawn;
+			var enemyCharacterDataListToSpawn = characterSpawnerDataInBattleComponent.EnemyCharacterDataListToSpawn;
+			var playerCharacterPositionListToSpawn = characterSpawnerDataInBattleComponent.PlayerCharacterPositionListToSpawn;
+			var enemyCharacterPositionListToSpawn = characterSpawnerDataInBattleComponent.EnemyCharacterPositionListToSpawn;
+			var spawner = SystemAPI.GetSingleton<CharacterSpawner>();
+
+			var ecb = new EntityCommandBuffer(Allocator.Temp);
+
+			// Player Characters Spawn
+			for (var i = 0; i < characterSpawnerDataInBattleComponent.PlayerCharacterDataCount; i++) 
+			{
+				var characterData = playerCharacterDataListToSpawn[i];
+				var characterPosition = playerCharacterPositionListToSpawn[i];
+				var characterEntity = state.EntityManager.Instantiate(spawner.CharacterPrefab);
+				var transform = SystemAPI.GetComponentRW<LocalTransform>(characterEntity);
+				transform.ValueRW.Position = characterPosition;
+				ecb.AddComponent(characterEntity, new CharacterPositionIndex { Index = i });
+				ecb.AddComponent(characterEntity, new CharacterMovementComponent());
+			}
+
+			// Enemy Characters Spawn
+			for (var i = 0; i < characterSpawnerDataInBattleComponent.EnemyCharacterDataCount; i++) 
+			{
+				var characterData = enemyCharacterDataListToSpawn[i];
+				var characterPosition = enemyCharacterPositionListToSpawn[i];
+				var characterEntity = state.EntityManager.Instantiate(spawner.CharacterPrefab);
+				var transform = SystemAPI.GetComponentRW<LocalTransform>(characterEntity);
+				transform.ValueRW.Position = characterPosition;
+				ecb.AddComponent(characterEntity, new CharacterPositionIndex { Index = i });
+				ecb.AddComponent(characterEntity, new CharacterMovementComponent());
+			}
+			// for (var i = 0; i < spawnerDataComponent.CharacterDataCount; i++) 
+			// {
+			// 	Debug.Log("Spawning character at " + spawnerDataComponent.CharacterPositionListToSpawn[i]);
+			// 	var characterData = spawnerDataComponent.CharacterDataListToSpawn[i];
+			// 	var characterPosition = spawnerDataComponent.CharacterPositionListToSpawn[i];
+			// 	var characterEntity = state.EntityManager.Instantiate(spawner.CharacterPrefab);
+			// 	var transform = SystemAPI.GetComponentRW<LocalTransform>(characterEntity);
+			// 	transform.ValueRW.Position = characterPosition;
+			// 	ecb.AddComponent(characterEntity, new CharacterPositionIndex { Index = i });
+			// 	ecb.AddComponent(characterEntity, new CharacterMovementComponent());
+			// }
+
+			ecb.Playback(state.EntityManager);
+			
+			// Set the spawner status to None
+			var spawnerComponent = SystemAPI.GetSingleton<CharacterSpawnerComponent>();
+			spawnerComponent.SpawnerState = SpawnerState.Complete;
+			spawnerComponent.HasToSpawn = false;
+			SystemAPI.SetSingleton<CharacterSpawnerComponent>(spawnerComponent);
+
+			// why!?
+
+			var	battleConfig = SystemAPI.GetSingletonRW<BattleConfig>();
+			battleConfig.ValueRW.IsSpawnFinished = true;
 		}
 	}
 }

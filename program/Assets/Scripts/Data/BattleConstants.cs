@@ -10,7 +10,7 @@ namespace Data
 		public static float MOVE_SPEED = 0.01f;
 
 		// positions of the player characters
-		public static float3[] playerCharacterPositions = new float3[]
+		public static float3[] PLAYER_CHARACTER_POSITIONS = new float3[]
 		{
 			new float3(-1, 0, 0),
 			new float3(-3, 0, 0),
@@ -19,7 +19,7 @@ namespace Data
 		};
 
 		// positions of the enemy characters
-		public static float3[] enemyCharacterPositions = new float3[]
+		public static float3[] ENEMY_CHARACTER_POSITIONS = new float3[]
 		{
 			new float3(2, 0, 0),
 			new float3(4, 0, 0),
@@ -28,7 +28,7 @@ namespace Data
 		};
 	
 		// player's character list for the test
-		public static CharacterData[] playerCharactersData = new CharacterData[]
+		public static CharacterData[] PLAYER_CHARACTERS_DATA = new CharacterData[]
 		{
 			new CharacterData
 			{
@@ -61,7 +61,7 @@ namespace Data
 		};
 
 		// enemy's character list for the test
-		public static CharacterData[] enemyCharactersData = new CharacterData[]
+		public static CharacterData[] ENEMY_CHARACTERS_DATA = new CharacterData[]
 		{
 			new CharacterData
 			{

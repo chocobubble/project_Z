@@ -56,14 +56,14 @@ namespace Battle
 				Debug.Log("Attacking");
 				PlayerCharacterDataBuffer playerCharacterDataBuffer = default;
 				EnemyCharacterDataBuffer enemyCharacterDataBuffer = default;
-				DynamicBuffer<PlayerCharacterDataBuffer> playerCharactersData = default;
-				DynamicBuffer<EnemyCharacterDataBuffer> enemyCharactersData = default;
+				DynamicBuffer<PlayerCharacterDataBuffer> PLAYER_CHARACTERS_DATA = default;
+				DynamicBuffer<EnemyCharacterDataBuffer> ENEMY_CHARACTERS_DATA = default;
 				foreach (var (playerBattleData, playerBattleDataEntity) in SystemAPI.Query<PlayerBattleData>().WithEntityAccess()) 
 				{
-					playerCharactersData = state.EntityManager.GetBuffer<PlayerCharacterDataBuffer>(playerBattleDataEntity);
+					PLAYER_CHARACTERS_DATA = state.EntityManager.GetBuffer<PlayerCharacterDataBuffer>(playerBattleDataEntity);
 					
 					// TODO: 이 체크 로직은 나중에 다른 곳으로 빼주자
-					if (playerCharactersData.Length == 0) 
+					if (PLAYER_CHARACTERS_DATA.Length == 0) 
 					{
 						Debug.Log("Player Characters Data is empty. Battle is over");
 						var battleStateComponent = SystemAPI.GetSingletonRW<BattleStateComponent>();
@@ -71,14 +71,14 @@ namespace Battle
 						SystemAPI.SetSingleton<TurnPhaseComponent>(new TurnPhaseComponent { TurnPhase = TurnPhase.None });
 						return;
 					}
-					playerCharacterDataBuffer = playerCharactersData[0];
+					playerCharacterDataBuffer = PLAYER_CHARACTERS_DATA[0];
 				}
 
 				foreach (var (enemyBattleData, enemyBattleDataEntity) in SystemAPI.Query<EnemyBattleData>().WithEntityAccess()) 
 				{
-					enemyCharactersData = state.EntityManager.GetBuffer<EnemyCharacterDataBuffer>(enemyBattleDataEntity);
+					ENEMY_CHARACTERS_DATA = state.EntityManager.GetBuffer<EnemyCharacterDataBuffer>(enemyBattleDataEntity);
 					// TODO: 이 체크 로직은 나중에 다른 곳으로 빼주자
-					if (enemyCharactersData.Length == 0) 
+					if (ENEMY_CHARACTERS_DATA.Length == 0) 
 					{
 						Debug.Log("Player Characters Data is empty. Battle is over");
 						var battleStateComponent = SystemAPI.GetSingletonRW<BattleStateComponent>();
@@ -86,7 +86,7 @@ namespace Battle
 						SystemAPI.SetSingleton<TurnPhaseComponent>(new TurnPhaseComponent { TurnPhase = TurnPhase.None });
 						return;
 					}
-					enemyCharacterDataBuffer = enemyCharactersData[0];
+					enemyCharacterDataBuffer = ENEMY_CHARACTERS_DATA[0];
 				}
 				CharacterData playerCharacterData = playerCharacterDataBuffer.Value; 
 				CharacterData enemyCharacterData = enemyCharacterDataBuffer.Value; 
@@ -108,20 +108,20 @@ namespace Battle
 					playerCharacterDataBuffer.Value = playerCharacterData;	
 					enemyCharacterDataBuffer.Value = enemyCharacterData;	
 
-					playerCharactersData[0] = playerCharacterDataBuffer;
-					enemyCharactersData[0] = enemyCharacterDataBuffer;
+					PLAYER_CHARACTERS_DATA[0] = playerCharacterDataBuffer;
+					ENEMY_CHARACTERS_DATA[0] = enemyCharacterDataBuffer;
 
 					bool shouldCharactersPositionUpdate = false;
 					if (playerCharacterData.MaxHP <= 0) 
 					{
 						Debug.Log($"Player Character {playerCharacterData.Id} is dead");
-						playerCharactersData.RemoveAt(0);
+						PLAYER_CHARACTERS_DATA.RemoveAt(0);
 						shouldCharactersPositionUpdate = true;
 					}
 					if (enemyCharacterData.MaxHP <= 0) 
 					{
 						Debug.Log($"Enemy Character {enemyCharacterData.Id} is dead");
-						enemyCharactersData.RemoveAt(0);
+						ENEMY_CHARACTERS_DATA.RemoveAt(0);
 						shouldCharactersPositionUpdate = true;
 					}
 					if (shouldCharactersPositionUpdate) 

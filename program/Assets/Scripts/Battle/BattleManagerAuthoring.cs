@@ -27,17 +27,17 @@ namespace Battle
 				{
 					playerCharacters.Add(new PlayerCharacterDataBuffer
 					{
-						Value = BattleConstants.playerCharactersData[i]
+						Value = BattleConstants.PLAYER_CHARACTERS_DATA[i]
 					});
 				}
 
-				var playerCharacterPositions = AddBuffer<PlayerCharacterPositionBuffer>(playerEntity);
+				var PLAYER_CHARACTER_POSITIONS = AddBuffer<PlayerCharacterPositionBuffer>(playerEntity);
 
 				for (int i = 0; i < BattleConstants.BATTLE_CHARACTER_COUNT; i++)
 				{
-					playerCharacterPositions.Add(new PlayerCharacterPositionBuffer
+					PLAYER_CHARACTER_POSITIONS.Add(new PlayerCharacterPositionBuffer
 					{
-						Position = BattleConstants.playerCharacterPositions[i]
+						Position = BattleConstants.PLAYER_CHARACTER_POSITIONS[i]
 					});
 				}
 
@@ -48,7 +48,7 @@ namespace Battle
 				{
 					enemyCharacters.Add(new EnemyCharacterDataBuffer
 					{
-						Value = BattleConstants.enemyCharactersData[i]
+						Value = BattleConstants.ENEMY_CHARACTERS_DATA[i]
 					});
 				}
 			}

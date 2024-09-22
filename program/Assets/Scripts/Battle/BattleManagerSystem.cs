@@ -37,26 +37,43 @@ namespace Battle
 					Debug.Log("Set BattleState to Setup from None");
 					SystemAPI.SetSingleton(new BattleStateComponent { BattleState = BattleState.Start });
 
-					// put character data to spawn
+					// put characters data on battle
 					{
-						var characterSpawnerComponent = SystemAPI.GetSingleton<CharacterSpawnerComponent>();
-						var spawnerEntity = SystemAPI.GetSingletonEntity<CharacterSpawnerComponent>();
-						var spawnerDataComponent = state.EntityManager.GetComponentObject<CharacterSpawnerDataComponent>(spawnerEntity);
-						for (int i = 0; i < BattleConstants.playerCharactersData.Length; i++)
+						var entity = SystemAPI.GetSingletonEntity<CharacterSpawnerComponent>();
+						var spawnerDataComponent = state.EntityManager.GetComponentObject<CharacterSpawnerDataInBattleComponent>(entity);
+						for (int i = 0; i < spawnerDataComponent.PlayerCharacterDataCount || i < BattleConstants.BATTLE_CHARACTER_COUNT; i++)
 						{
-							spawnerDataComponent.CharacterDataCount++;
-							spawnerDataComponent.CharacterDataListToSpawn[i] = BattleConstants.playerCharactersData[i];
-							spawnerDataComponent.CharacterPositionListToSpawn[i] = BattleConstants.playerCharacterPositions[i]; 
+							spawnerDataComponent.PlayerCharacterDataCount++;
+							spawnerDataComponent.PlayerCharacterDataListToSpawn[i] = BattleConstants.PLAYER_CHARACTERS_DATA[i];
+							spawnerDataComponent.PlayerCharacterPositionListToSpawn[i] = BattleConstants.PLAYER_CHARACTER_POSITIONS[i];
 						}
-
-						for (int i = BattleConstants.playerCharactersData.Length; i < BattleConstants.enemyCharactersData.Length + BattleConstants.playerCharactersData.Length; i++)
+						for (int i = 0; i < spawnerDataComponent.EnemyCharacterDataCount || i < BattleConstants.BATTLE_CHARACTER_COUNT; i++)
 						{
-							int j = i - BattleConstants.playerCharactersData.Length;
-							spawnerDataComponent.CharacterDataCount++;
-							spawnerDataComponent.CharacterDataListToSpawn[i] = BattleConstants.enemyCharactersData[j];
-							spawnerDataComponent.CharacterPositionListToSpawn[i] = BattleConstants.enemyCharacterPositions[j]; 
+							spawnerDataComponent.EnemyCharacterDataCount++;
+							spawnerDataComponent.EnemyCharacterDataListToSpawn[i] = BattleConstants.ENEMY_CHARACTERS_DATA[i];
+							spawnerDataComponent.EnemyCharacterPositionListToSpawn[i] = BattleConstants.ENEMY_CHARACTER_POSITIONS[i];
 						}
 					}
+					// // put character data to spawn
+					// {
+					// 	var characterSpawnerComponent = SystemAPI.GetSingleton<CharacterSpawnerComponent>();
+					// 	var spawnerEntity = SystemAPI.GetSingletonEntity<CharacterSpawnerComponent>();
+					// 	var spawnerDataComponent = state.EntityManager.GetComponentObject<CharacterSpawnerDataComponent>(spawnerEntity);
+					// 	for (int i = 0; i < BattleConstants.PLAYER_CHARACTERS_DATA.Length; i++)
+					// 	{
+					// 		spawnerDataComponent.CharacterDataCount++;
+					// 		spawnerDataComponent.CharacterDataListToSpawn[i] = BattleConstants.PLAYER_CHARACTERS_DATA[i];
+					// 		spawnerDataComponent.CharacterPositionListToSpawn[i] = BattleConstants.PLAYER_CHARACTER_POSITIONS[i]; 
+					// 	}
+
+					// 	for (int i = BattleConstants.PLAYER_CHARACTERS_DATA.Length; i < BattleConstants.ENEMY_CHARACTERS_DATA.Length + BattleConstants.PLAYER_CHARACTERS_DATA.Length; i++)
+					// 	{
+					// 		int j = i - BattleConstants.PLAYER_CHARACTERS_DATA.Length;
+					// 		spawnerDataComponent.CharacterDataCount++;
+					// 		spawnerDataComponent.CharacterDataListToSpawn[i] = BattleConstants.ENEMY_CHARACTERS_DATA[j];
+					// 		spawnerDataComponent.CharacterPositionListToSpawn[i] = BattleConstants.ENEMY_CHARACTER_POSITIONS[j]; 
+					// 	}
+					// }
 				}
 			}
 
@@ -74,27 +91,27 @@ namespace Battle
 			
 			foreach (var (playerBattleData, playerBattleDataEntity) in SystemAPI.Query<PlayerBattleData>().WithEntityAccess()) 
 			{
-				var playerCharactersData = state.EntityManager.GetBuffer<PlayerCharacterDataBuffer>(playerBattleDataEntity);
-				for (int i = 0; i < playerCharactersData.Length; i++)
+				var PLAYER_CHARACTERS_DATA = state.EntityManager.GetBuffer<PlayerCharacterDataBuffer>(playerBattleDataEntity);
+				for (int i = 0; i < PLAYER_CHARACTERS_DATA.Length; i++)
 				{
 					Debug.Log("Character Data Count : " + spawnerDataComponent.CharacterDataCount);
 					spawnerDataComponent.CharacterDataCount++;
-					spawnerDataComponent.CharacterDataListToSpawn[i] = playerCharactersData[i].Value;
-					spawnerDataComponent.CharacterPositionListToSpawn[i] = BattleConstants.playerCharacterPositions[i];
+					spawnerDataComponent.CharacterDataListToSpawn[i] = PLAYER_CHARACTERS_DATA[i].Value;
+					spawnerDataComponent.CharacterPositionListToSpawn[i] = BattleConstants.PLAYER_CHARACTER_POSITIONS[i];
 				}
 			}
 
 			foreach (var (enemyBattleData, enemyBattleDataEntity) in SystemAPI.Query<EnemyBattleData>().WithEntityAccess()) 
 			{
-				var enemyCharactersData = state.EntityManager.GetBuffer<EnemyCharacterDataBuffer>(enemyBattleDataEntity);
+				var ENEMY_CHARACTERS_DATA = state.EntityManager.GetBuffer<EnemyCharacterDataBuffer>(enemyBattleDataEntity);
 				int j = spawnerDataComponent.CharacterDataCount;
-				for (int i = j; i < enemyCharactersData.Length + j; i++)
+				for (int i = j; i < ENEMY_CHARACTERS_DATA.Length + j; i++)
 				{
 					Debug.Log("Character Data Count : " + spawnerDataComponent.CharacterDataCount);
 					int k = i - j;
 					spawnerDataComponent.CharacterDataCount++;
-					spawnerDataComponent.CharacterDataListToSpawn[i] = enemyCharactersData[k].Value;
-					spawnerDataComponent.CharacterPositionListToSpawn[i] = BattleConstants.enemyCharacterPositions[k];
+					spawnerDataComponent.CharacterDataListToSpawn[i] = ENEMY_CHARACTERS_DATA[k].Value;
+					spawnerDataComponent.CharacterPositionListToSpawn[i] = BattleConstants.ENEMY_CHARACTER_POSITIONS[k];
 				}
 			}
 			
