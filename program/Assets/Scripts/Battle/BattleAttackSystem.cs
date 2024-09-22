@@ -48,19 +48,9 @@ namespace Battle
 		[BurstCompile]
 		private void Attack(ref SystemState state)
 		{
-			// Debug.Log("Fighting");
 			var battleConfig = SystemAPI.GetSingleton<BattleConfig>();
 			isAttackFinished = battleConfig.IsAttackFinished;
-			// currentTurnTime += Time.deltaTime;
-			// var turnDuration = BattleConfig.TurnDurationSeconds;
-			// if (currentTurnTime >= turnDuration) 
-			// {
-			// 	currentTurn++;
-			// 	currentTurnTime = 0.0f;
-			// 	isAttackFinished = false;
-			// 	Debug.Log($"Turn {currentTurn} complete");
-			// }
-			
+
 			if (isAttackFinished == false) 
 			{
 				Debug.Log("Attacking");

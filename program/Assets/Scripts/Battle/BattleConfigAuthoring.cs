@@ -1,5 +1,6 @@
 using Unity.Entities;
 using UnityEngine;
+using Data;
 
 namespace Battle
 {
@@ -20,6 +21,7 @@ namespace Battle
 					TurnCount = 0,
 					TurnDurationSeconds = 3.0f,
 					ShouldCharactersPositionUpdate = false,
+					CharacterMovementSpeed = BattleConstants.MOVE_SPEED,
 					IsSpawnFinished = false,
 					IsPreAttackFinished = false,
 					IsAttackFinished = false,
@@ -44,6 +46,7 @@ namespace Battle
 		public int TurnCount;
 		public float TurnDurationSeconds;
 		public bool ShouldCharactersPositionUpdate;
+		public float CharacterMovementSpeed;
 
 		// Turn
 		// TODO : count 하는 방식으로 바꿀 수 있지 않을까?

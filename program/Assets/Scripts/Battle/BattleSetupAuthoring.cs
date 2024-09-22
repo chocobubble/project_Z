@@ -19,9 +19,5 @@ namespace Battle
 			AddComponent(battleSetupEntity, new BattleSetup());
 		}
 	}
-
-
-
-
 	public struct BattleSetup : IComponentData { }
 }

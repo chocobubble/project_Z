@@ -7,6 +7,7 @@ namespace Data
 	{
 		public static int BATTLE_CHARACTER_COUNT = 4;
 		public static float TURN_DURATION = 2.0f;
+		public static float MOVE_SPEED = 0.01f;
 
 		// positions of the player characters
 		public static float3[] playerCharacterPositions = new float3[]

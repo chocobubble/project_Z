@@ -75,6 +75,7 @@ namespace Battle
 				var transform = SystemAPI.GetComponentRW<LocalTransform>(characterEntity);
 				transform.ValueRW.Position = characterPosition;
 				ecb.AddComponent(characterEntity, new CharacterPositionIndex { Index = i });
+				ecb.AddComponent(characterEntity, new CharacterMovementComponent());
 			}
 
 			ecb.Playback(state.EntityManager);
