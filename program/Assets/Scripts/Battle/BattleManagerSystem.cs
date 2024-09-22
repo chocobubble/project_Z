@@ -30,26 +30,12 @@ namespace Battle
 			var battleState = SystemAPI.GetSingleton<BattleStateComponent>().BattleState;
 			var turnPhase = SystemAPI.GetSingleton<TurnPhaseComponent>().TurnPhase;
 
-			if (battleConfig.ShouldCharactersPositionUpdate)
-			{
-				turnPhase = TurnPhase.Spawning;
-				SystemAPI.SetSingleton(new TurnPhaseComponent { TurnPhase = TurnPhase.Spawning });
-				UpdateCharactersPosition(ref state);
-				battleConfig.ShouldCharactersPositionUpdate = false;
-				SystemAPI.SetSingleton<BattleConfig>(battleConfig);
-				return;
-			}
 			// TODO : 임시로 작업한 사항들이므로 나중에 수정해야함
 			{
 				if (battleState == BattleState.None)
 				{
 					Debug.Log("Set BattleState to Setup from None");
 					SystemAPI.SetSingleton(new BattleStateComponent { BattleState = BattleState.Start });
-				}
-				if (turnPhase == TurnPhase.None)
-				{
-					Debug.Log("Set TurnPhase to Spawning from None");
-					SystemAPI.SetSingleton(new TurnPhaseComponent { TurnPhase = TurnPhase.Spawning });
 
 					// put character data to spawn
 					{
@@ -70,9 +56,6 @@ namespace Battle
 							spawnerDataComponent.CharacterDataListToSpawn[i] = BattleConstants.enemyCharactersData[j];
 							spawnerDataComponent.CharacterPositionListToSpawn[i] = BattleConstants.enemyCharacterPositions[j]; 
 						}
-
-						characterSpawnerComponent.HasToSpawn = true;
-						SystemAPI.SetSingleton<CharacterSpawnerComponent>(characterSpawnerComponent);
 					}
 				}
 			}
@@ -94,6 +77,7 @@ namespace Battle
 				var playerCharactersData = state.EntityManager.GetBuffer<PlayerCharacterDataBuffer>(playerBattleDataEntity);
 				for (int i = 0; i < playerCharactersData.Length; i++)
 				{
+					Debug.Log("Character Data Count : " + spawnerDataComponent.CharacterDataCount);
 					spawnerDataComponent.CharacterDataCount++;
 					spawnerDataComponent.CharacterDataListToSpawn[i] = playerCharactersData[i].Value;
 					spawnerDataComponent.CharacterPositionListToSpawn[i] = BattleConstants.playerCharacterPositions[i];
@@ -106,6 +90,7 @@ namespace Battle
 				int j = spawnerDataComponent.CharacterDataCount;
 				for (int i = j; i < enemyCharactersData.Length + j; i++)
 				{
+					Debug.Log("Character Data Count : " + spawnerDataComponent.CharacterDataCount);
 					int k = i - j;
 					spawnerDataComponent.CharacterDataCount++;
 					spawnerDataComponent.CharacterDataListToSpawn[i] = enemyCharactersData[k].Value;

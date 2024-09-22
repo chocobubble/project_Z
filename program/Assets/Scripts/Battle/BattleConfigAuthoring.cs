@@ -19,7 +19,12 @@ namespace Battle
 					CharacterPrefab = GetEntity(authoring.CharacterPrefab, TransformUsageFlags.None),
 					TurnCount = 0,
 					TurnDurationSeconds = 3.0f,
-					ShouldCharactersPositionUpdate = false
+					ShouldCharactersPositionUpdate = false,
+					IsSpawnFinished = false,
+					IsPreAttackFinished = false,
+					IsAttackFinished = false,
+					IsPostAttackFinished = false
+
 				});
 				AddComponent(entity, new BattleStateComponent
 				{
@@ -39,6 +44,13 @@ namespace Battle
 		public int TurnCount;
 		public float TurnDurationSeconds;
 		public bool ShouldCharactersPositionUpdate;
+
+		// Turn
+		// TODO : count 하는 방식으로 바꿀 수 있지 않을까?
+		public bool IsSpawnFinished;
+		public bool IsPreAttackFinished;
+		public bool IsAttackFinished;
+		public bool IsPostAttackFinished;
 	}
 		
 	public enum BattleState  { None, Setup, Start, End, }

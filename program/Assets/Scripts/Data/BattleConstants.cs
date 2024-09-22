@@ -6,6 +6,7 @@ namespace Data
 	public struct BattleConstants
 	{
 		public static int BATTLE_CHARACTER_COUNT = 4;
+		public static float TURN_DURATION = 2.0f;
 
 		// positions of the player characters
 		public static float3[] playerCharacterPositions = new float3[]

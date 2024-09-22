@@ -6,7 +6,7 @@ using Unity.Entities.UniversalDelegates;
 
 namespace Battle 
 {
-	[UpdateAfter(typeof(BattleManagerSystem))]
+	[UpdateAfter(typeof(TurnManagerSystem))]
 	public partial struct BattleAttackSystem : ISystem 
 	{
 		float currentTurnTime;
@@ -49,23 +49,21 @@ namespace Battle
 		private void Attack(ref SystemState state)
 		{
 			// Debug.Log("Fighting");
-			var BattleConfig = SystemAPI.GetSingleton<BattleConfig>();
-			currentTurnTime += Time.deltaTime;
-			var turnDuration = BattleConfig.TurnDurationSeconds;
-			if (currentTurnTime >= turnDuration) 
-			{
-				currentTurn++;
-				currentTurnTime = 0.0f;
-				isAttackFinished = false;
-				Debug.Log($"Turn {currentTurn} complete");
-			}
+			var battleConfig = SystemAPI.GetSingleton<BattleConfig>();
+			isAttackFinished = battleConfig.IsAttackFinished;
+			// currentTurnTime += Time.deltaTime;
+			// var turnDuration = BattleConfig.TurnDurationSeconds;
+			// if (currentTurnTime >= turnDuration) 
+			// {
+			// 	currentTurn++;
+			// 	currentTurnTime = 0.0f;
+			// 	isAttackFinished = false;
+			// 	Debug.Log($"Turn {currentTurn} complete");
+			// }
 			
 			if (isAttackFinished == false) 
 			{
 				Debug.Log("Attacking");
-				// Attack
-				isAttackFinished = true;
-
 				PlayerCharacterDataBuffer playerCharacterDataBuffer = default;
 				EnemyCharacterDataBuffer enemyCharacterDataBuffer = default;
 				DynamicBuffer<PlayerCharacterDataBuffer> playerCharactersData = default;
@@ -77,10 +75,10 @@ namespace Battle
 					// TODO: 이 체크 로직은 나중에 다른 곳으로 빼주자
 					if (playerCharactersData.Length == 0) 
 					{
-						Debug.Log("Player Characters Data is empty");
-						var turnPhaseComponent = SystemAPI.GetSingleton<TurnPhaseComponent>();
-						turnPhaseComponent.TurnPhase = TurnPhase.None;
-						SystemAPI.SetSingleton(turnPhaseComponent);
+						Debug.Log("Player Characters Data is empty. Battle is over");
+						var battleStateComponent = SystemAPI.GetSingletonRW<BattleStateComponent>();
+						battleStateComponent.ValueRW.BattleState = BattleState.End;
+						SystemAPI.SetSingleton<TurnPhaseComponent>(new TurnPhaseComponent { TurnPhase = TurnPhase.None });
 						return;
 					}
 					playerCharacterDataBuffer = playerCharactersData[0];
@@ -92,10 +90,10 @@ namespace Battle
 					// TODO: 이 체크 로직은 나중에 다른 곳으로 빼주자
 					if (enemyCharactersData.Length == 0) 
 					{
-						Debug.Log("Player Characters Data is empty");
-						var turnPhaseComponent = SystemAPI.GetSingleton<TurnPhaseComponent>();
-						turnPhaseComponent.TurnPhase = TurnPhase.None;
-						SystemAPI.SetSingleton(turnPhaseComponent);
+						Debug.Log("Player Characters Data is empty. Battle is over");
+						var battleStateComponent = SystemAPI.GetSingletonRW<BattleStateComponent>();
+						battleStateComponent.ValueRW.BattleState = BattleState.End;
+						SystemAPI.SetSingleton<TurnPhaseComponent>(new TurnPhaseComponent { TurnPhase = TurnPhase.None });
 						return;
 					}
 					enemyCharacterDataBuffer = enemyCharactersData[0];
@@ -138,11 +136,12 @@ namespace Battle
 					}
 					if (shouldCharactersPositionUpdate) 
 					{
-						var battleConfig = SystemAPI.GetSingleton<BattleConfig>();
 						battleConfig.ShouldCharactersPositionUpdate = true;
-						SystemAPI.SetSingleton(battleConfig);
 					}
 				}
+				battleConfig.IsAttackFinished = true;
+				SystemAPI.SetSingleton<BattleConfig>(battleConfig);
+
 			}
 		}
 	}

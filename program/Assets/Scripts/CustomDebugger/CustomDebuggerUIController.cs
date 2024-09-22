@@ -11,6 +11,9 @@ public class CustomDebuggerUIController : MonoBehaviour
 	private Label debugLabel;
 	// private Dictionary<string, string> debugText = new Dictionary<string, string>();
 	private string debugText = "Debug Text";
+	private string stateText = "State Text";
+	private string characterStatText = "Character Stat Text";
+	private string turnTimerText = "Turn Timer Text";
 
 	private void OnEnable()
 	{
@@ -20,30 +23,35 @@ public class CustomDebuggerUIController : MonoBehaviour
 
 	}
 
+	public void UpdateTurnTimerDebugger(float turnDurationTime, float lastTurnPhaseTime)
+	{
+		turnTimerText = $"Turn Duration Time: {turnDurationTime}\n Last Turn Phase Time: {lastTurnPhaseTime}";
+		UpdateText();
+	}
 	public void UpdateCustomDebugger(BattleState battleState, TurnPhase turnPhase)	
 	{
-		debugText = $"Battle State: {battleState}, Turn Phase: {turnPhase}";
+		stateText = $"Battle State: {battleState}, Turn Phase: {turnPhase}";
 		UpdateText();
 	}
 
   	public void UpdateCustomDebugger(CharacterData[] playerCharacterDataList, CharacterData[] enemyCharacterDataList)
 	{
-		debugText = "Player Characters:";
+		characterStatText = "Player Characters:";
 		foreach (var characterData in playerCharacterDataList)
 		{
-			debugText += $"{characterData.Id} ({characterData.MaxHP}, {characterData.Attack}) "; 
+			characterStatText += $"{characterData.Id} ({characterData.MaxHP}, {characterData.Attack}) "; 
 		}
-		debugText += "\nEnemy Characters:";
+		characterStatText += "\nEnemy Characters:";
 		foreach (var characterData in enemyCharacterDataList)
 		{
-			debugText += $"{characterData.Id} ({characterData.MaxHP}, {characterData.Attack}) "; 
+			characterStatText += $"{characterData.Id} ({characterData.MaxHP}, {characterData.Attack}) "; 
 		}
 		UpdateText();
 	}
 
 	private void UpdateText()
 	{
-		debugLabel.text = debugText;
+		debugLabel.text = $"{debugText}\n{stateText}\n{characterStatText}\n{turnTimerText}"; 
 	}
 }
 }
