@@ -1,6 +1,7 @@
 using Unity.Entities;
 using UnityEngine;
 using Data;
+using Unity.Mathematics;
 
 namespace Battle
 {
@@ -26,7 +27,7 @@ namespace Battle
 					IsPreAttackFinished = false,
 					IsAttackFinished = false,
 					IsPostAttackFinished = false
-
+					
 				});
 				AddComponent(entity, new BattleStateComponent
 				{
@@ -36,6 +37,11 @@ namespace Battle
 				{
 					TurnPhase = TurnPhase.None
 				});
+				var battleConfigManaged = new BattleConfigManaged();
+				battleConfigManaged.PlayerCharacterPositions = BattleConstants.PLAYER_CHARACTER_POSITIONS;
+				battleConfigManaged.EnemyCharacterPositions = BattleConstants.ENEMY_CHARACTER_POSITIONS;
+				AddComponentObject(entity, battleConfigManaged); 
+				
 			}
 		}
 	}
@@ -54,6 +60,16 @@ namespace Battle
 		public bool IsPreAttackFinished;
 		public bool IsAttackFinished;
 		public bool IsPostAttackFinished;
+	}
+
+	public class BattleConfigManaged : IComponentData
+	{
+		public float3[] PlayerCharacterPositions = new float3[4];
+		public float3[] EnemyCharacterPositions = new float3[4];
+		public BattleConfigManaged()
+		{
+
+		}
 	}
 		
 	public enum BattleState  { None, Setup, Start, End, }

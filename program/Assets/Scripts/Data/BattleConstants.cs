@@ -8,14 +8,16 @@ namespace Data
 		public static int BATTLE_CHARACTER_COUNT = 4;
 		public static float TURN_DURATION = 2.0f;
 		public static float MOVE_SPEED = 0.01f;
+		public static float3 ENEMY_ATTACK_POSITION = new float3(0.5f, 0, 0);
+		public static float3 PLAYER_ATTACK_POSITION = new float3(-0.5f, 0, 0);
 
 		// positions of the player characters
 		public static float3[] PLAYER_CHARACTER_POSITIONS = new float3[]
 		{
-			new float3(-1, 0, 0),
-			new float3(-3, 0, 0),
-			new float3(-5, 0, 0),
-			new float3(-7, 0, 0),
+			new float3(-2, 0, 0),
+			new float3(-4, 0, 0),
+			new float3(-6, 0, 0),
+			new float3(-8, 0, 0),
 		};
 
 		// positions of the enemy characters

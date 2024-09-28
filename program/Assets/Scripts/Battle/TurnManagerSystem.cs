@@ -3,6 +3,7 @@ using Unity.Burst;
 using UnityEngine;
 using Data;
 using TMPro;
+using Unity.Collections;
 
 namespace Battle
 {

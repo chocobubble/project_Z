@@ -19,6 +19,8 @@ namespace Battle
 	{
 		// public float MoveSpeed;		
 		public float3 TargetPosition;
+		public float3 ReturnPosition;
 		public bool IsMoving;
+		
 	}
 }

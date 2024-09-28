@@ -54,40 +54,40 @@ namespace Battle
 			if (battleConfig.ValueRO.ShouldCharactersPositionUpdate)
 			{
 				Debug.Log("Should Update Characters Position");
-				UpdateCharactersPosition(ref state);
+				// UpdateCharactersPosition(ref state);
 				battleConfig.ValueRW.ShouldCharactersPositionUpdate = false;
 				return;
 			}
 
 			// delete existing characters
-			{
-				var ecb2 = new EntityCommandBuffer(Allocator.Temp);
-				var entities = state.EntityManager.GetAllEntities();
-				foreach (var entity in entities)
-				{
-					if (state.EntityManager.HasComponent<CharacterPositionIndex>(entity))
-					{
-						ecb2.DestroyEntity(entity);
-					}
-				}
-				ecb2.Playback(state.EntityManager);
-			}
+			// {
+			// 	var ecb2 = new EntityCommandBuffer(Allocator.Temp);
+			// 	var entities = state.EntityManager.GetAllEntities();
+			// 	foreach (var entity in entities)
+			// 	{
+			// 		if (state.EntityManager.HasComponent<CharacterPositionIndex>(entity))
+			// 		{
+			// 			ecb2.DestroyEntity(entity);
+			// 		}
+			// 	}
+			// 	ecb2.Playback(state.EntityManager);
+			// }
 
-			var ecb = new EntityCommandBuffer(Allocator.Temp);
-			Debug.Log("Player Characters Spawn Start");
-			for (var i = 0; i < spawnerDataComponent.CharacterDataCount; i++) 
-			{
-				Debug.Log("Spawning character at " + spawnerDataComponent.CharacterPositionListToSpawn[i]);
-				var characterData = spawnerDataComponent.CharacterDataListToSpawn[i];
-				var characterPosition = spawnerDataComponent.CharacterPositionListToSpawn[i];
-				var characterEntity = state.EntityManager.Instantiate(spawner.CharacterPrefab);
-				var transform = SystemAPI.GetComponentRW<LocalTransform>(characterEntity);
-				transform.ValueRW.Position = characterPosition;
-				ecb.AddComponent(characterEntity, new CharacterPositionIndex { Index = i });
-				ecb.AddComponent(characterEntity, new CharacterMovementComponent());
-			}
+			// var ecb = new EntityCommandBuffer(Allocator.Temp);
+			// Debug.Log("Player Characters Spawn Start");
+			// for (var i = 0; i < spawnerDataComponent.CharacterDataCount; i++) 
+			// {
+			// 	Debug.Log("Spawning character at " + spawnerDataComponent.CharacterPositionListToSpawn[i]);
+			// 	var characterData = spawnerDataComponent.CharacterDataListToSpawn[i];
+			// 	var characterPosition = spawnerDataComponent.CharacterPositionListToSpawn[i];
+			// 	var characterEntity = state.EntityManager.Instantiate(spawner.CharacterPrefab);
+			// 	var transform = SystemAPI.GetComponentRW<LocalTransform>(characterEntity);
+			// 	transform.ValueRW.Position = characterPosition;
+			// 	ecb.AddComponent(characterEntity, new CharacterPositionIndex { Index = i });
+			// 	ecb.AddComponent(characterEntity, new CharacterMovementComponent());
+			// }
 
-			ecb.Playback(state.EntityManager);
+			// ecb.Playback(state.EntityManager);
 
 			// Set the spawner status to None
 			spawnerComponent.SpawnerState = SpawnerState.Complete;
@@ -164,7 +164,9 @@ namespace Battle
 				var transform = SystemAPI.GetComponentRW<LocalTransform>(characterEntity);
 				transform.ValueRW.Position = characterPosition;
 				ecb.AddComponent(characterEntity, new CharacterPositionIndex { Index = i });
-				ecb.AddComponent(characterEntity, new CharacterMovementComponent());
+				ecb.AddComponent(characterEntity, new CharacterMovementComponent { IsMoving = false, ReturnPosition = characterPosition });
+				ecb.AddComponent(characterEntity, new CharacterOwnershipTypeComponent{ ownershipType = CharacterOwnershipType.Player });
+				ecb.AddComponent(characterEntity, new CharacterAction { actionState = CharacterActionState.None });
 			}
 
 			// Enemy Characters Spawn
@@ -176,7 +178,9 @@ namespace Battle
 				var transform = SystemAPI.GetComponentRW<LocalTransform>(characterEntity);
 				transform.ValueRW.Position = characterPosition;
 				ecb.AddComponent(characterEntity, new CharacterPositionIndex { Index = i });
-				ecb.AddComponent(characterEntity, new CharacterMovementComponent());
+				ecb.AddComponent(characterEntity, new CharacterMovementComponent { IsMoving = false, ReturnPosition = characterPosition });
+				ecb.AddComponent(characterEntity, new CharacterOwnershipTypeComponent{ ownershipType = CharacterOwnershipType.Enemy });
+				ecb.AddComponent(characterEntity, new CharacterAction { actionState = CharacterActionState.None });
 			}
 			// for (var i = 0; i < spawnerDataComponent.CharacterDataCount; i++) 
 			// {
