@@ -33,7 +33,7 @@ namespace Battle
 				var targetPosition = characterMovementComponent.ValueRO.TargetPosition;
 				var newPosition = math.lerp(currentPosition, targetPosition, characterMovementSpeed);
 				localTransform.ValueRW.Position = newPosition;
-				if (math.distance(newPosition, targetPosition) < 0.1f)
+				if (math.distance(newPosition, targetPosition) < 0.01f)
 				{
 					characterMovementComponent.ValueRW.IsMoving = false;
 					Debug.Log("CharacterMovementSystem: Character has arrived at the target position");

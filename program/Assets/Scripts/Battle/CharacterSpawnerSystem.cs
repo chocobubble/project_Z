@@ -31,20 +31,40 @@ namespace Battle
 				Debug.Log("No CharacterSpawner component found");
 				return;
 			}
+
+			// Debug.Log("CharacterSpawnerSystem OnUpdate");
+			// var battleStateComponent = SystemAPI.GetSingleton<BattleStateComponent>();
+			// if (battleStateComponent.BattleState == BattleState.Setup)
+			// {
+				
+			// 	battleStateComponent.BattleState = BattleState.Start;
+			// 	SystemAPI.SetSingleton<BattleStateComponent>(battleStateComponent);
+			// 	return;
+			// }	
+
 			var spawnerComponent = SystemAPI.GetSingleton<CharacterSpawnerComponent>();
 			if (spawnerComponent.HasToSpawn == false)	
 			{
 				return;
 			}
 
-			Debug.Log("CharacterSpawnerSystem OnUpdate");
-			var battleStateComponent = SystemAPI.GetSingleton<BattleStateComponent>();
-			if (battleStateComponent.BattleState == BattleState.Start)
+			// delete existing characters
 			{
-				SpawnCharactersOnBattle(ref state);
-				return;
-			}	
+				var ecb2 = new EntityCommandBuffer(Allocator.Temp);
+				var entities = state.EntityManager.GetAllEntities();
+				foreach (var entity in entities)
+				{
+					if (state.EntityManager.HasComponent<CharacterPositionIndex>(entity))
+					{
+						ecb2.DestroyEntity(entity);
+					}
+				}
+				ecb2.Playback(state.EntityManager);
+			}
+			
+			SpawnCharactersOnBattle(ref state);
 
+			// TODO: 이 아래 들은 잘 모르겠음  수정하기!!
 
 			var spawner = SystemAPI.GetSingleton<CharacterSpawner>();
 			var spawnerEntity = SystemAPI.GetSingletonEntity<CharacterSpawnerComponent>();
@@ -59,19 +79,6 @@ namespace Battle
 				return;
 			}
 
-			// delete existing characters
-			// {
-			// 	var ecb2 = new EntityCommandBuffer(Allocator.Temp);
-			// 	var entities = state.EntityManager.GetAllEntities();
-			// 	foreach (var entity in entities)
-			// 	{
-			// 		if (state.EntityManager.HasComponent<CharacterPositionIndex>(entity))
-			// 		{
-			// 			ecb2.DestroyEntity(entity);
-			// 		}
-			// 	}
-			// 	ecb2.Playback(state.EntityManager);
-			// }
 
 			// var ecb = new EntityCommandBuffer(Allocator.Temp);
 			// Debug.Log("Player Characters Spawn Start");
@@ -145,6 +152,7 @@ namespace Battle
 
 		private void SpawnCharactersOnBattle(ref SystemState state)
 		{
+			Debug.Log("Spawn Characters On Battle");
 			var entity = SystemAPI.GetSingletonEntity<CharacterSpawnerComponent>();
 			var characterSpawnerDataInBattleComponent = state.EntityManager.GetComponentObject<CharacterSpawnerDataInBattleComponent>(entity);
 			var playerCharacterDataListToSpawn = characterSpawnerDataInBattleComponent.PlayerCharacterDataListToSpawn;

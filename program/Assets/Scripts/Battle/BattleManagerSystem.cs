@@ -35,7 +35,10 @@ namespace Battle
 				if (battleState == BattleState.None)
 				{
 					Debug.Log("Set BattleState to Setup from None");
-					SystemAPI.SetSingleton(new BattleStateComponent { BattleState = BattleState.Start });
+					SystemAPI.SetSingleton(new BattleStateComponent { BattleState = BattleState.Setup });
+					var characterSpawnerComponent = SystemAPI.GetSingleton<CharacterSpawnerComponent>();
+					characterSpawnerComponent.HasToSpawn = true;
+					SystemAPI.SetSingleton<CharacterSpawnerComponent>(characterSpawnerComponent);
 
 					// put characters data on battle
 					{
@@ -74,6 +77,15 @@ namespace Battle
 					// 		spawnerDataComponent.CharacterPositionListToSpawn[i] = BattleConstants.ENEMY_CHARACTER_POSITIONS[j]; 
 					// 	}
 					// }
+				}
+				else if (battleState == BattleState.Setup)
+				{
+					var characterSpawnerComponent = SystemAPI.GetSingleton<CharacterSpawnerComponent>();
+					if (!characterSpawnerComponent.HasToSpawn)
+					{
+						SystemAPI.SetSingleton(new BattleStateComponent { BattleState = BattleState.Start });
+						Debug.Log("Set BattleState to Start from Setup");
+					}
 				}
 			}
 
