@@ -33,7 +33,7 @@ namespace Battle
 		{
 			foreach (var (characterAction, characterEntity) in SystemAPI.Query<CharacterAction>().WithEntityAccess()) 
 			{
-				switch (characterAction.actionState) 
+				switch (characterAction.ActionState) 
 				{
 					case CharacterActionState.None:
 						None(ref state, characterEntity);
@@ -65,7 +65,7 @@ namespace Battle
 		{
 			// TODO : Delete below code
 			var characterAction = state.EntityManager.GetComponentData<CharacterAction>(characterEntity);
-			characterAction.actionState = CharacterActionState.Idle;
+			characterAction.ActionState = CharacterActionState.Idle;
 			state.EntityManager.SetComponentData(characterEntity, characterAction);
 			Debug.Log("Character Action State is set to Idle"); 
 		}
@@ -80,7 +80,7 @@ namespace Battle
 			if (characterPostionIndex.Index != 0) return;
 
 			var characterAction = state.EntityManager.GetComponentData<CharacterAction>(characterEntity);
-			characterAction.actionState = CharacterActionState.MovingToTarget;
+			characterAction.ActionState = CharacterActionState.MovingToTarget;
 			state.EntityManager.SetComponentData(characterEntity, characterAction);
 
 			var characterMovementComponent = state.EntityManager.GetComponentData<CharacterMovementComponent>(characterEntity);
@@ -98,7 +98,7 @@ namespace Battle
 			if (characterMovementComponent.IsMoving) return;
 
 			var characterAction = state.EntityManager.GetComponentData<CharacterAction>(characterEntity);
-			characterAction.actionState = CharacterActionState.Attacking;
+			characterAction.ActionState = CharacterActionState.Attacking;
 			state.EntityManager.SetComponentData(characterEntity, characterAction);
 			Debug.Log("Character Action State is set to Attacking");
 		}
@@ -117,7 +117,7 @@ namespace Battle
 			state.EntityManager.SetComponentData(characterEntity, characterMovementComponent);	
 
 			var characterAction = state.EntityManager.GetComponentData<CharacterAction>(characterEntity);
-			characterAction.actionState = CharacterActionState.ReturningToPosition;
+			characterAction.ActionState = CharacterActionState.ReturningToPosition;
 			state.EntityManager.SetComponentData(characterEntity, characterAction);
 			Debug.Log("Character Action State is set to ReturningToPosition");
 		}
@@ -133,7 +133,7 @@ namespace Battle
 			if (turnPhase == TurnPhase.Attack) return;
 
 			var characterAction = state.EntityManager.GetComponentData<CharacterAction>(characterEntity);
-			characterAction.actionState = CharacterActionState.Idle;
+			characterAction.ActionState = CharacterActionState.Idle;
 			state.EntityManager.SetComponentData(characterEntity, characterAction);
 			Debug.Log("Character Action State is set to Idle");	
 		}

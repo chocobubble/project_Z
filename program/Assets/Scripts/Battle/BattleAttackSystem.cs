@@ -3,6 +3,7 @@ using Unity.Burst;
 using UnityEngine;
 using Data;
 using Unity.Entities.UniversalDelegates;
+using Unity.Mathematics;
 
 namespace Battle 
 {

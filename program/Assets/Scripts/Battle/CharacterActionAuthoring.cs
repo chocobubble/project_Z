@@ -21,7 +21,7 @@ namespace Battle
 
 	public struct CharacterAction : IComponentData
 	{
-		public CharacterActionState actionState;
+		public CharacterActionState ActionState;
 	}
 	
 
