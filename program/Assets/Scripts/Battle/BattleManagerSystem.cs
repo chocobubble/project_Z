@@ -83,7 +83,7 @@ namespace Battle
 					var characterSpawnerComponent = SystemAPI.GetSingleton<CharacterSpawnerComponent>();
 					if (!characterSpawnerComponent.HasToSpawn)
 					{
-						SystemAPI.SetSingleton(new BattleStateComponent { BattleState = BattleState.Start });
+						// SystemAPI.SetSingleton(new BattleStateComponent { BattleState = BattleState.Start });
 						Debug.Log("Set BattleState to Start from Setup");
 					}
 				}

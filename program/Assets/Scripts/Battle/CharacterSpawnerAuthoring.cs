@@ -55,14 +55,6 @@ namespace Battle
 		}
 	}
 
-	public enum SpawnerState
-	{
-		None,
-		Waiting,
-		Spawning,
-		Complete,
-	}
-
 	public struct CharacterSpawnerComponent : IComponentData
 	{
 		public SpawnerState SpawnerState;

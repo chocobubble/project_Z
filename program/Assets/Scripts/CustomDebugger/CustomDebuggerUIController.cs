@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections.Generic;
 using Data;
-using Battle;
 
 namespace CustomDebugger 
 {

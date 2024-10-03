@@ -3,6 +3,7 @@ using Unity.Burst;
 using UnityEngine;
 using System.Net.Http.Headers;
 using Unity.Mathematics;
+using Data;
 
 namespace Battle 
 {

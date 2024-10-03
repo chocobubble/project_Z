@@ -71,10 +71,6 @@ namespace Battle
 
 		}
 	}
-		
-	public enum BattleState  { None, Setup, Start, End, }
-
-	public enum TurnPhase { None, Spawning, PreAttack, Attack, PostAttack, }
 
 		// Component to store battle setup data
 	public struct BattleStateComponent : IComponentData

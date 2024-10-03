@@ -24,6 +24,4 @@ namespace Battle
 		public CharacterActionState ActionState;
 	}
 	
-
-	public enum CharacterActionState { None, Idle, MovingToTarget, Attacking, ReturningToPosition, Stunned, Dead, }
 }
