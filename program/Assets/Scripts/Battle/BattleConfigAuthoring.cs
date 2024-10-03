@@ -23,6 +23,7 @@ namespace Battle
 					TurnDurationSeconds = 3.0f,
 					ShouldCharactersPositionUpdate = false,
 					CharacterMovementSpeed = BattleConstants.MOVE_SPEED,
+					IsBattleSetupFinished = false,
 					IsSpawnFinished = false,
 					IsPreAttackFinished = false,
 					IsAttackFinished = false,
@@ -53,6 +54,9 @@ namespace Battle
 		public float TurnDurationSeconds;
 		public bool ShouldCharactersPositionUpdate;
 		public float CharacterMovementSpeed;
+
+		// Battle
+		public bool IsBattleSetupFinished;
 
 		// Turn
 		// TODO : count 하는 방식으로 바꿀 수 있지 않을까?

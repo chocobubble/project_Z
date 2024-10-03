@@ -36,9 +36,6 @@ namespace Battle
 				{
 					Debug.Log("Set BattleState to Setup from None");
 					SystemAPI.SetSingleton(new BattleStateComponent { BattleState = BattleState.Setup });
-					var characterSpawnerComponent = SystemAPI.GetSingleton<CharacterSpawnerComponent>();
-					characterSpawnerComponent.HasToSpawn = true;
-					SystemAPI.SetSingleton<CharacterSpawnerComponent>(characterSpawnerComponent);
 
 					// put characters data on battle
 					{
@@ -80,12 +77,12 @@ namespace Battle
 				}
 				else if (battleState == BattleState.Setup)
 				{
+					if (battleConfig.IsBattleSetupFinished == false) return;
 					var characterSpawnerComponent = SystemAPI.GetSingleton<CharacterSpawnerComponent>();
-					if (!characterSpawnerComponent.HasToSpawn)
-					{
-						// SystemAPI.SetSingleton(new BattleStateComponent { BattleState = BattleState.Start });
-						Debug.Log("Set BattleState to Start from Setup");
-					}
+					characterSpawnerComponent.HasToSpawn = true;
+					SystemAPI.SetSingleton<CharacterSpawnerComponent>(characterSpawnerComponent);
+					SystemAPI.SetSingleton(new BattleStateComponent { BattleState = BattleState.Start });
+					Debug.Log("Set BattleState to Start from Setup");
 				}
 			}
 

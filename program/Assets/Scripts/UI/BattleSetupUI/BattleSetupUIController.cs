@@ -5,6 +5,7 @@ namespace BattleUI
 {
 	public class BattleSetupUIController : MonoBehaviour
 	{
+		public bool isSetupEnd;
 		private Label coinLabel;
 		private Button rerollButton;
 		private Button setupEndButton;
@@ -19,6 +20,8 @@ namespace BattleUI
 
 			rerollButton.clicked += Reroll;
 			setupEndButton.clicked += SetupEnd;
+
+			isSetupEnd = false;
 		}
 
 		private void Reroll()
@@ -29,12 +32,21 @@ namespace BattleUI
 		private void SetupEnd()
 		{
 			Debug.Log("Setup End Button Clicked");
+			isSetupEnd = true;
+
+			// TODO : battle scene 켜지게
 		}
 
 		public void UpdateCoin(int coin)
 		{
 			// Debug.Log("Update Coin Label Text");
 			coinLabel.text = $"Coin: {coin}";
+		}
+
+		public void DeActivateUI()
+		{
+			Debug.Log("Deactivating BattleSetupUI");
+			gameObject.SetActive(false);
 		}
 	}
 }

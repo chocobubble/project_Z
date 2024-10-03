@@ -59,10 +59,24 @@ namespace Battle
 			}
 
 			var battleSetupUIController = battleSetupManagedComponent.BattleSetupUIController;
-			if (battleSetupUIController != null && isCoinUpdateRequired) 
+			if (battleSetupUIController == null) 
+			{
+				Debug.LogError("BattleSetupUIController is null");
+				return;
+			}
+
+			if (isCoinUpdateRequired) 
 			{
 				battleSetupUIController.UpdateCoin(coin);
 				isCoinUpdateRequired = false;
+			}
+
+			if (battleSetupUIController.isSetupEnd)
+			{
+				var battleConfig = SystemAPI.GetSingleton<BattleConfig>();
+				battleConfig.IsBattleSetupFinished = true;
+				SystemAPI.SetSingleton(battleConfig);
+				battleSetupUIController.DeActivateUI();
 			}
 		}
 
