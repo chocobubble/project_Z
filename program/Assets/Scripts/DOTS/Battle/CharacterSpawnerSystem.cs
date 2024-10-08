@@ -6,6 +6,7 @@ using Data;
 using Unity.Collections;
 using Unity.Mathematics;
 using System.Threading.Tasks;
+using Unity.Physics;
 
 namespace Battle
 {
@@ -247,6 +248,14 @@ namespace Battle
 				ecb.AddComponent(characterEntity, new CharacterMovementComponent { IsMoving = false, ReturnPosition = characterPosition });
 				ecb.AddComponent(characterEntity, new CharacterOwnershipTypeComponent{ ownershipType = CharacterOwnershipType.Player });
 				ecb.AddComponent(characterEntity, new CharacterAction { ActionState = CharacterActionState.None });
+				// ecb.AddComponent(characterEntity, new PhysicsCollider {
+				// 	Value = Unity.Physics.BoxCollider.Create(new BoxGeometry {
+				// 		Center = new float3(0, 0, 0),
+				// 		Size = new float3(1, 1, 1),
+				// 		Orientation = quaternion.identity,
+				// 		BevelRadius = 0.0f
+				// 	})
+				// });
 			}
 
 			// Enemy Characters Spawn
