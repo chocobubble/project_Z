@@ -24,9 +24,9 @@ namespace PlayerData
 			characterBundles = new List<CharacterBundle>();
 
 			// For prototype purposes, add some default character bundles
-			characterBundles.Add(new CharacterBundle("Player1", new CharacterStat()));
-			characterBundles.Add(new CharacterBundle("Player2", new CharacterStat()));
-			characterBundles.Add(new CharacterBundle("Player3", new CharacterStat()));
+			// characterBundles.Add(new CharacterBundle("Player1", new CharacterStat()));
+			// characterBundles.Add(new CharacterBundle("Player2", new CharacterStat()));
+			// characterBundles.Add(new CharacterBundle("Player3", new CharacterStat()));
 		}
 
 		public void AddCharacterBundle(CharacterBundle characterBundle)

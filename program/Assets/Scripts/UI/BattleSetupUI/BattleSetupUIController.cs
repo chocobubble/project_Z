@@ -10,6 +10,8 @@ namespace BattleUI
 		private Button rerollButton;
 		private Button setupEndButton;
 
+		public GameObject battleManager;
+
 		private void OnEnable()
 		{
 			var root = GetComponent<UIDocument>().rootVisualElement;
@@ -35,6 +37,11 @@ namespace BattleUI
 			isSetupEnd = true;
 
 			// TODO : battle scene 켜지게
+			if (battleManager != null)
+			{
+				battleManager.SetActive(true);
+			}
+			DeActivateUI();
 		}
 
 		public void UpdateCoin(int coin)

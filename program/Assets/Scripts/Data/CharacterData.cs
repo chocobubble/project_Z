@@ -8,7 +8,7 @@ namespace Data
 		// public string Name;
 		public int Id;
 		public int Level;
-		public int MaxHP;
+		public int HP;
 		public int Attack;
 
 	}

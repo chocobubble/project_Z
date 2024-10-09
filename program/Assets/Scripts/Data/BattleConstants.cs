@@ -1,5 +1,4 @@
-using System.Data.Common;
-using Unity.Mathematics;
+using UnityEngine;
 
 namespace Data 
 {
@@ -9,25 +8,25 @@ namespace Data
 		public static int BATTLE_CHARACTER_COUNT = 4;
 		public static float TURN_DURATION = 2.0f;
 		public static float MOVE_SPEED = 0.01f;
-		public static float3 ENEMY_ATTACK_POSITION = new float3(0.5f, 0, 0);
-		public static float3 PLAYER_ATTACK_POSITION = new float3(-0.5f, 0, 0);
+		public static Vector3 ENEMY_ATTACK_POSITION = new Vector3(0.5f, 0, 0);
+		public static Vector3 PLAYER_ATTACK_POSITION = new Vector3(-0.5f, 0, 0);
 
 		// positions of the player characters
-		public static float3[] PLAYER_CHARACTER_POSITIONS = new float3[]
+		public static Vector3[] PLAYER_CHARACTER_POSITIONS = new Vector3[]
 		{
-			new float3(-2, 0, 0),
-			new float3(-4, 0, 0),
-			new float3(-6, 0, 0),
-			new float3(-8, 0, 0),
+			new Vector3(-2, 0, 0),
+			new Vector3(-4, 0, 0),
+			new Vector3(-6, 0, 0),
+			new Vector3(-8, 0, 0),
 		};
 
 		// positions of the enemy characters
-		public static float3[] ENEMY_CHARACTER_POSITIONS = new float3[]
+		public static Vector3[] ENEMY_CHARACTER_POSITIONS = new Vector3[]
 		{
-			new float3(2, 0, 0),
-			new float3(4, 0, 0),
-			new float3(6, 0, 0),
-			new float3(8, 0, 0),
+			new Vector3(2, 0, 0),
+			new Vector3(4, 0, 0),
+			new Vector3(6, 0, 0),
+			new Vector3(8, 0, 0),
 		};
 	
 		// player's character list for the test
@@ -37,28 +36,28 @@ namespace Data
 			{
 				Id = 1,
 				Level = 1,
-				MaxHP = 4,
+				HP = 4,
 				Attack = 2 
 			},
 			new CharacterData
 			{
 				Id = 2,
 				Level = 1,
-				MaxHP = 3,
+				HP = 3,
 				Attack = 1
 			},
 			new CharacterData
 			{
 				Id = 3,
 				Level = 1,
-				MaxHP = 1,
+				HP = 1,
 				Attack = 4
 			},
 			new CharacterData
 			{
 				Id = 4,
 				Level = 1,
-				MaxHP = 2,
+				HP = 2,
 				Attack = 3
 			},
 		};
@@ -70,28 +69,28 @@ namespace Data
 			{
 				Id = 5,
 				Level = 1,
-				MaxHP = 4,
+				HP = 4,
 				Attack = 2
 			},
 			new CharacterData
 			{
 				Id = 6,
 				Level = 1,
-				MaxHP = 3,
+				HP = 3,
 				Attack = 1
 			},
 			new CharacterData
 			{
 				Id  = 7,
 				Level = 1,
-				MaxHP = 1,
+				HP = 1,
 				Attack = 4
 			},
 			new CharacterData
 			{
 				Id = 8,
 				Level = 1,
-				MaxHP = 2,
+				HP = 2,
 				Attack = 3
 			},
 		};
