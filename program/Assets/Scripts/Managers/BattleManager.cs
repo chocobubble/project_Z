@@ -3,6 +3,7 @@ using Character;
 using System.Collections.Generic;	
 using Data;
 using System;
+using Unity.Entities.UniversalDelegates;
 
 namespace Battle 
 {
@@ -10,7 +11,10 @@ namespace Battle
 	{
 		private List<CharacterBundle> playerCharacterBundles;
 		private List<CharacterBundle> enemyCharacterBundles;
+		private CharactersManager playerCharactersManager;
+		private CharactersManager enemyCharactersManager;
 		private CharacterSpawner characterSpawner;
+		public TurnManager turnManager;
 		public GameObject characterSpawnerGameObject;
 		private BattleState battleState;
 		private TurnPhase turnPhase;
@@ -49,7 +53,6 @@ namespace Battle
 			}
 
 			OnBattleStateChanged += OnBattleStateChangedHandler;
-
 			ChangeBattleState(BattleState.Setup);
 		}
 
@@ -65,8 +68,28 @@ namespace Battle
 
 		private void SpawnCharacters()
 		{
-			characterSpawner.SpawnCharacter(playerCharacterBundles.ToArray(), BattleConstants.PLAYER_CHARACTER_POSITIONS);
-			characterSpawner.SpawnCharacter(enemyCharacterBundles.ToArray(), BattleConstants.ENEMY_CHARACTER_POSITIONS);
+			var playerCharacters = new List<UnitController>();
+			var enemyCharacters = new List<UnitController>();
+			for (int i = 0; i < BattleConstants.PLAYER_CHARACTERS_DATA.Length; i++)
+			{
+				var playerCharacter = characterSpawner.SpawnCharacter(playerCharacterBundles[i], BattleConstants.PLAYER_CHARACTER_POSITIONS[i]);
+				var enemyCharacter = characterSpawner.SpawnCharacter(enemyCharacterBundles[i], BattleConstants.ENEMY_CHARACTER_POSITIONS[i]);
+				turnManager.playerCharacters[i] = playerCharacter;
+				turnManager.enemyCharacters[i] = enemyCharacter;
+				playerCharacters.Add(playerCharacter.GetComponent<UnitController>());
+				enemyCharacters.Add(enemyCharacter.GetComponent<UnitController>());
+				playerCharacter.GetComponent<UnitController>().SetBasePosition(BattleConstants.PLAYER_CHARACTER_POSITIONS[i]);
+				enemyCharacter.GetComponent<UnitController>().SetBasePosition(BattleConstants.ENEMY_CHARACTER_POSITIONS[i]);
+			}
+
+			playerCharactersManager = new CharactersManager(playerCharacters);
+			enemyCharactersManager = new CharactersManager(enemyCharacters);
+
+			for (int i = 0; i < BattleConstants.PLAYER_CHARACTERS_DATA.Length; i++)
+			{
+				playerCharacters[i].SetCharactersManagers(playerCharactersManager, enemyCharactersManager);
+				enemyCharacters[i].SetCharactersManagers(enemyCharactersManager, playerCharactersManager);
+			}
 		}
 
 		private void RemoveCharacters()
@@ -81,6 +104,7 @@ namespace Battle
 
 		private void OnBattleStateChangedHandler(BattleState battleState)
 		{
+			// TODO : 스택 무한히 쌓일 가능성..
 			switch (battleState)
 			{
 				case BattleState.None:
@@ -90,7 +114,8 @@ namespace Battle
 					ChangeBattleState(BattleState.Start);
 					break;
 				case BattleState.Start:
-					ChangeBattleState(BattleState.End);
+					turnManager.CurrentTurnPhase = TurnPhase.PreAttack;
+					// ChangeBattleState(BattleState.End);
 					break;
 				case BattleState.End:
 					RemoveCharacters();

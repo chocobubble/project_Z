@@ -11,6 +11,14 @@ namespace Character
 			characterPrefab = gameObject;			
 		}
 
+		public GameObject SpawnCharacter(CharacterBundle characterBundle, Vector3 position)
+		{
+			var character = Instantiate(characterPrefab, position, Quaternion.identity);
+			var UnitController = character.GetComponent<UnitController>();
+			UnitController.SetCharacterBundle(characterBundle);
+			return character;
+		}
+
 		public void SpawnCharacter(CharacterBundle[] characterBundles, Vector3[] positions)
 		{
 			if (characterBundles.Length != positions.Length)
@@ -22,7 +30,7 @@ namespace Character
 			for (int i = 0; i < characterBundles.Length; i++) 
 			{
 				var character = Instantiate(characterPrefab, positions[i], Quaternion.identity);
-				var characterBundle = character.GetComponent<CharacterController>().GetCharacterBundle();
+				var characterBundle = character.GetComponent<UnitController>().GetCharacterBundle();
 				characterBundle = characterBundles[i];
 			}
 			
