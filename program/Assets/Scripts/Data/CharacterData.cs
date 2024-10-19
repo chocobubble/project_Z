@@ -11,25 +11,29 @@ namespace Data
 		public int HP;
 		public int Attack;
 
+		public override string ToString() 
+		{
+			return $"Id: {Id}, Level: {Level}, HP: {HP}, Attack: {Attack}";
+		}
 	}
 
-	public struct PlayerCharacterDataBuffer : IBufferElementData
-	{
-		public CharacterData Value;
-	}
+	// public struct PlayerCharacterDataBuffer : IBufferElementData
+	// {
+	// 	public CharacterData Value;
+	// }
 
-	public struct EnemyCharacterDataBuffer : IBufferElementData
-	{
-		public CharacterData Value;
-	}
+	// public struct EnemyCharacterDataBuffer : IBufferElementData
+	// {
+	// 	public CharacterData Value;
+	// }
 
-	public struct PlayerCharacterPositionBuffer : IBufferElementData
-	{
-		public float3 Position;
-	}
+	// public struct PlayerCharacterPositionBuffer : IBufferElementData
+	// {
+	// 	public float3 Position;
+	// }
 
-	public struct EnemyCharacterPositionBuffer : IBufferElementData
-	{
-		public float3 Position;
-	}
+	// public struct EnemyCharacterPositionBuffer : IBufferElementData
+	// {
+	// 	public float3 Position;
+	// }
 }

@@ -27,5 +27,10 @@ namespace Character
 			this.CurrentHP = other.CurrentHP;
 			this.Attack = other.Attack;
 		}
+
+		public override readonly string ToString()
+		{
+			return $"Level: {Level}, Exp: {Exp}, HP: {HP}, CurrentHP: {CurrentHP}, Attack: {Attack}";
+		}
 	}
 }

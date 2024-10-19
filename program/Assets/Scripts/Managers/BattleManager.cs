@@ -74,8 +74,8 @@ namespace Battle
 			{
 				var playerCharacter = characterSpawner.SpawnCharacter(playerCharacterBundles[i], BattleConstants.PLAYER_CHARACTER_POSITIONS[i]);
 				var enemyCharacter = characterSpawner.SpawnCharacter(enemyCharacterBundles[i], BattleConstants.ENEMY_CHARACTER_POSITIONS[i]);
-				turnManager.playerCharacters[i] = playerCharacter;
-				turnManager.enemyCharacters[i] = enemyCharacter;
+				turnManager.PlayerCharacters[i] = playerCharacter;
+				turnManager.EnemyCharacters[i] = enemyCharacter;
 				playerCharacters.Add(playerCharacter.GetComponent<UnitController>());
 				enemyCharacters.Add(enemyCharacter.GetComponent<UnitController>());
 				playerCharacter.GetComponent<UnitController>().SetBasePosition(BattleConstants.PLAYER_CHARACTER_POSITIONS[i]);
@@ -114,6 +114,7 @@ namespace Battle
 					ChangeBattleState(BattleState.Start);
 					break;
 				case BattleState.Start:
+					turnManager.gameObject.SetActive(true);
 					turnManager.CurrentTurnPhase = TurnPhase.PreAttack;
 					// ChangeBattleState(BattleState.End);
 					break;

@@ -8,8 +8,10 @@ namespace Battle
 {
 	public class TurnManager : MonoBehaviour
 	{
-		public List<GameObject> playerCharacters;
-		public List<GameObject> enemyCharacters;
+		[SerializeField]
+		private List<GameObject> playerCharacters;
+		[SerializeField]
+		private List<GameObject> enemyCharacters;
 		private TurnPhase turnPhase;
 		public bool ShouldCharacterSpawn { get; set; }
 
@@ -28,6 +30,18 @@ namespace Battle
 					Debug.Log("TurnPhase is already " + value);
 				}
 			}
+		}
+
+		public List<GameObject> PlayerCharacters 
+		{
+			get { return playerCharacters; }
+			set { playerCharacters = value; }
+		}
+
+		public List<GameObject> EnemyCharacters 
+		{
+			get { return enemyCharacters; }
+			set { enemyCharacters = value; }
 		}
 
 		void OnEnable()

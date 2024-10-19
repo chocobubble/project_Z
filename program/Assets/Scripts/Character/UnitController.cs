@@ -17,6 +17,7 @@ namespace Character
 		private CharactersManager allyCharactersManager;
 		private CharactersManager enemyCharactersManager;
 		private CharacterBundle _characterBundle;
+		[SerializeField]
 		private CharacterStat _characterStat;
 		private CharacterActionState _characterActionState;
 		public CharacterActionState CharacterActionState 
@@ -30,6 +31,11 @@ namespace Character
 					OnActionStateChanged(_characterActionState);
 				}
 			}
+		}
+		public CharacterStat CharacterStat
+		{
+			get { return _characterStat; }
+			set { _characterStat = value; }
 		}
 
 		void Start()
@@ -67,6 +73,7 @@ namespace Character
 			// Deep copy
 			_characterBundle = new CharacterBundle(characterBundle);
 			_characterStat = _characterBundle.GetCharacterStat();
+			Debug.Log("CharacterStat Set to " + _characterStat);
 		}
 
 		public CharacterBundle GetCharacterBundle()
