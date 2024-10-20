@@ -3,6 +3,8 @@ using Data;
 using System;
 using System.Collections.Generic;
 using Character;
+using Cysharp.Threading.Tasks;
+using NUnit.Framework;
 
 namespace Battle 
 {
@@ -14,6 +16,7 @@ namespace Battle
 		private List<GameObject> enemyCharacters;
 		private TurnPhase turnPhase;
 		public bool ShouldCharacterSpawn { get; set; }
+		private bool shouldCharactersReposition = false;
 
 		public TurnPhase CurrentTurnPhase 
 		{
@@ -65,7 +68,7 @@ namespace Battle
 				enemyCharacters.Add(null);
 			}
 		}
-	
+
 		void Update()
 		{
 			switch (turnPhase)
@@ -78,12 +81,86 @@ namespace Battle
 					CurrentTurnPhase = TurnPhase.Attack;
 					break;
 				case TurnPhase.Attack:
-				 	OnAttackPhase();
+					OnAttackPhase();
 					CurrentTurnPhase = TurnPhase.PostAttack;
 					break;
 				case TurnPhase.PostAttack:
+					if (shouldCharactersReposition)
+						RepositionCharacters();
+					CheckCharactersState();
+					// CurrentTurnPhase = TurnPhase.PreAttack;
+					// wait for a while
+
 					break;
-			}	
+				case TurnPhase.Positioning:
+					// if (IsAllCharactersIdle())
+					// {
+					// 	CurrentTurnPhase = TurnPhase.PreAttack;
+					// }
+					break;
+			}
+		}
+
+		private void RepositionCharacters()
+		{
+			
+		}
+
+		private void CheckCharactersState()
+		{
+			// Debug.Log("CheckCharactersState");
+			for (int i = 0; i < playerCharacters.Count; i++)
+			{
+				if (playerCharacters[i] == null)
+				{
+					for (int j = i + 1; j < playerCharacters.Count; j++)
+					{
+						if (playerCharacters[j] != null)
+						{
+							playerCharacters[i] = playerCharacters[j];
+							playerCharacters[j] = null;
+
+							// Set the base position of the character
+							playerCharacters[i].GetComponent<UnitController>().SetBasePosition(BattleConstants.PLAYER_CHARACTER_POSITIONS[i]);
+							break;
+						}
+					}
+					continue;
+				}
+				var characterActionState = playerCharacters[i].GetComponent<UnitController>().CharacterActionState;
+				if (characterActionState != CharacterActionState.Idle)
+				{
+					return;
+				}
+			}
+
+			for (int i = 0; i < enemyCharacters.Count; i++)
+			{
+				if (enemyCharacters[i] == null)
+				{
+					for (int j = i + 1; j < enemyCharacters.Count; j++)
+					{
+						if (enemyCharacters[j] != null)
+						{
+							enemyCharacters[i] = enemyCharacters[j];
+							enemyCharacters[j] = null;
+
+							// Set the base position of the character
+							playerCharacters[i].GetComponent<UnitController>().SetBasePosition(BattleConstants.ENEMY_CHARACTER_POSITIONS[i]);
+							playerCharacters[i].GetComponent<UnitController>().SetCharacterActionState(CharacterActionState.Moving);
+							break;
+						}
+					}
+					continue;
+				}
+				var characterActionState = enemyCharacters[i].GetComponent<UnitController>().CharacterActionState;
+				if (characterActionState != CharacterActionState.Idle)
+				{
+					return;
+				}
+			}
+
+			CurrentTurnPhase = TurnPhase.PreAttack;
 		}
 
 		private void OnAttackPhase()

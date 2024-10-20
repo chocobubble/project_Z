@@ -2,7 +2,7 @@ namespace Data
 {
 	public enum BattleState { None, Setup, Start, End, }
 
-	public enum TurnPhase { None, Spawning, PreAttack, Attack, PostAttack, }
+	public enum TurnPhase { None, Spawning, PreAttack, Attack, PostAttack, Positioning}
 
 	public enum SpawnerState
 	{
@@ -12,5 +12,5 @@ namespace Data
 		Complete,
 	}
 
-	public enum CharacterActionState { None, Idle, MovingToTarget, Attacking, ReturningToPosition, Stunned, Dead, }
+	public enum CharacterActionState { None, Idle, MovingToTarget, Attacking, ReturningToPosition, Stunned, Dead, Moving }
 }

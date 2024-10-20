@@ -79,15 +79,15 @@ public class CustomDebuggerUIController : MonoBehaviour
 			if (TurnManager.PlayerCharacters[i] == null)
 				continue;
 			var characterStat = TurnManager.PlayerCharacters[i].GetComponent<UnitController>().CharacterStat;
-			characterStatText += $"idx : {i} | stat : ({characterStat.HP}, {characterStat.Attack}) "; 
+			characterStatText += $"idx : {i} | stat : ({characterStat.CurrentHP}, {characterStat.Attack}) | state : {TurnManager.PlayerCharacters[i].GetComponent<UnitController>().CharacterActionState}"; 
 		}
 		characterStatText += "\nEnemy Characters:";
 		for (int i = 0; i < TurnManager.EnemyCharacters.Count; i++)
 		{
 			if (TurnManager.EnemyCharacters[i] == null)
 				continue;
-			var characterData = TurnManager.EnemyCharacters[i].GetComponent<UnitController>().CharacterStat;
-			characterStatText += $"idx : {i} | stat : ({characterData.HP}, {characterData.Attack}) "; 
+			var characterStat = TurnManager.EnemyCharacters[i].GetComponent<UnitController>().CharacterStat;
+			characterStatText += $"idx : {i} | stat : ({characterStat.CurrentHP}, {characterStat.Attack}) | state : {TurnManager.EnemyCharacters[i].GetComponent<UnitController>().CharacterActionState}"; 
 		}
 	}
 

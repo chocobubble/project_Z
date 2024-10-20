@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using Battle;
 using Data;
-using Unity.VisualScripting;
+using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 
 namespace Character 
@@ -41,28 +40,61 @@ namespace Character
 		void Start()
 		{
 			_characterBundle = new CharacterBundle();
-			_characterActionState = CharacterActionState.None;
-			targetPosition = Vector3.zero;
-			isMoving = false;
+			_characterActionState = CharacterActionState.Idle;
+			// targetPosition = Vector3.zero;
+			// isMoving = false;
 		}
 
 		void Update()
 		{
 			if (isMoving)
 			{
-				transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * BattleConstants.MOVE_SPEED);
-				if (transform.position == targetPosition)
-				{
-					isMoving = false;
-					if (_characterActionState == CharacterActionState.MovingToTarget)
+				// transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * BattleConstants.MOVE_SPEED);
+				transform.position = Vector3.Lerp(transform.position, targetPosition, BattleConstants.MOVE_SPEED * Time.deltaTime);
+			}
+
+			// On action state changed logic
+			switch (_characterActionState)
+			{
+				case CharacterActionState.Idle:
+					break;
+				case CharacterActionState.MovingToTarget:
+					isMoving = true;
+					if (IsArrivedAtTargetPosition())
 					{
-						_characterActionState = CharacterActionState.Attacking;
+						CharacterActionState = CharacterActionState.Attacking;
+						isMoving = false;
 					}
-					else if (_characterActionState == CharacterActionState.ReturningToPosition)
+					break;
+				case CharacterActionState.Attacking:
+					Attack(enemyCharactersManager.GetUnitController(0));
+					CharacterActionState = CharacterActionState.ReturningToPosition;
+					targetPosition = basePosition;
+					break;
+				case CharacterActionState.ReturningToPosition:
+					isMoving = true;
+					if (IsArrivedAtTargetPosition())
 					{
-						_characterActionState = CharacterActionState.Idle;
+						CharacterActionState = CharacterActionState.Idle;
+						isMoving = false;
 					}
-				}
+					break;
+				case CharacterActionState.Stunned:
+					break;
+				case CharacterActionState.Dead:
+					if (IsArrivedAtTargetPosition())
+					{
+						Debug.Log("Character is dead");
+						Destroy(gameObject);
+					}
+					break;
+				case CharacterActionState.Moving:
+				 	if (IsArrivedAtTargetPosition())
+					{
+						CharacterActionState = CharacterActionState.Idle;
+						isMoving = false;
+					}
+					break;
 			}
 		}
 
@@ -91,7 +123,7 @@ namespace Character
 			_characterStat.CurrentHP -= damage;
 			if (_characterStat.CurrentHP <= 0)
 			{
-				_characterActionState = CharacterActionState.Dead;
+				CharacterActionState = CharacterActionState.Dead;
 				_characterStat.CurrentHP = 0;
 			}
 		}
@@ -114,20 +146,23 @@ namespace Character
 			switch (characterActionState)
 			{
 				case CharacterActionState.Idle:
+					targetPosition = Vector3.zero;
+					isMoving = false;
 					break;
 				case CharacterActionState.MovingToTarget:
-					isMoving = true;
 					break;
 				case CharacterActionState.Attacking:
-					Attack(enemyCharactersManager.GetUnitController(0));
-					CharacterActionState = CharacterActionState.ReturningToPosition;
-					targetPosition = basePosition;
 					break;
 				case CharacterActionState.ReturningToPosition:
 					break;
 				case CharacterActionState.Stunned:
 					break;
 				case CharacterActionState.Dead:
+					targetPosition = BattleConstants.DEAD_POSITION;
+					isMoving = true;
+					break;
+				case CharacterActionState.Moving:
+				 	isMoving = true;
 					break;
 			}
 		}
@@ -141,6 +176,26 @@ namespace Character
 		public void SetBasePosition(Vector3 basePosition)
 		{
 			this.basePosition = basePosition;
+		}
+
+		// 타겟 포지션에 도착했는 지 확인하는 함수
+		public bool IsArrivedAtTargetPosition()
+		{
+			float distanceToTargetPosition = Vector3.Distance(transform.position, targetPosition);
+			if (distanceToTargetPosition < 0.5f)
+			{
+				Debug.Log("Arrived at target position");
+				return true;
+			}
+			else 
+			{
+				return false;
+			}
+		}
+
+		public void SetCharacterActionState(CharacterActionState characterActionState)
+		{
+			CharacterActionState = characterActionState;
 		}
 	}
 }
