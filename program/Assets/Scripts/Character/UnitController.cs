@@ -204,6 +204,11 @@ namespace Character
 			this.basePosition = basePosition;
 		}
 
+		public void SetTargetPosition(Vector3 targetPosition)
+		{
+			this.targetPosition = targetPosition;
+		}
+
 		// 타겟 포지션에 도착했는 지 확인하는 함수
 		public bool IsArrivedAtTargetPosition()
 		{

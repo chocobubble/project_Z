@@ -157,6 +157,7 @@ namespace Battle
 
 							// Set the base position of the character
 							playerCharacters[i].GetComponent<UnitController>().SetBasePosition(BattleConstants.PLAYER_CHARACTER_POSITIONS[i]);
+							playerCharacters[i].GetComponent<UnitController>().SetTargetPosition(BattleConstants.PLAYER_CHARACTER_POSITIONS[i]);
 							playerCharacters[i].GetComponent<UnitController>().SetCharacterActionState(CharacterActionState.Moving);
 							break;
 						}
@@ -185,6 +186,7 @@ namespace Battle
 
 							// Set the base position of the character
 							enemyCharacters[i].GetComponent<UnitController>().SetBasePosition(BattleConstants.ENEMY_CHARACTER_POSITIONS[i]);
+							enemyCharacters[i].GetComponent<UnitController>().SetTargetPosition(BattleConstants.ENEMY_CHARACTER_POSITIONS[i]);
 							enemyCharacters[i].GetComponent<UnitController>().SetCharacterActionState(CharacterActionState.Moving);
 							break;
 						}
@@ -206,7 +208,9 @@ namespace Battle
 		{
 			Debug.Log("OnAttackPhase");
 			playerCharacters[0].GetComponent<UnitController>().CharacterActionState = CharacterActionState.MovingToTarget;
+			playerCharacters[0].GetComponent<UnitController>().SetTargetPosition(BattleConstants.PLAYER_ATTACK_POSITION);
 			enemyCharacters[0].GetComponent<UnitController>().CharacterActionState = CharacterActionState.MovingToTarget;
+			enemyCharacters[0].GetComponent<UnitController>().SetTargetPosition(BattleConstants.ENEMY_ATTACK_POSITION);
 		}
 
 		void OnDestroy()
