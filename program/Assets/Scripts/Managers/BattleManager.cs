@@ -59,6 +59,15 @@ namespace Battle
 		public void Start()
 		{
 			Debug.Log("BattleManager Start");
+		
+			if (turnManager != null) 
+			{
+				turnManager.OnCharacterListChanged += (playerCharacters, enemyCharacters) => 
+				{
+					playerCharactersManager.UpdateCharacters(playerCharacters);
+					enemyCharactersManager.UpdateCharacters(enemyCharacters);
+				};
+			}
 		}
 
 		public void Update()

@@ -1,3 +1,4 @@
+using System;
 using Battle;
 using Data;
 using Unity.Entities.UniversalDelegates;
@@ -24,6 +25,12 @@ namespace Character
 			get { return _characterActionState; }
 			set 
 			{
+				// 예외 체크 
+				if (_characterActionState == CharacterActionState.Dead && value != CharacterActionState.Dead)
+				{
+					Debug.LogError("Character is dead. Cannot change state to " + value);
+				}
+
 				if (_characterActionState != value)
 				{
 					_characterActionState = value;
@@ -96,9 +103,17 @@ namespace Character
 					}
 					break;
 			}
+
+			CheckCharacterState();
 		}
 
-
+		private void CheckCharacterState()
+		{
+			if (_characterStat.CurrentHP <= 0)
+			{
+				CharacterActionState = CharacterActionState.Dead;
+			}
+		}
 
 		public void SetCharacterBundle(CharacterBundle characterBundle)
 		{
@@ -123,7 +138,7 @@ namespace Character
 			_characterStat.CurrentHP -= damage;
 			if (_characterStat.CurrentHP <= 0)
 			{
-				CharacterActionState = CharacterActionState.Dead;
+				// CharacterActionState = CharacterActionState.Dead;
 				_characterStat.CurrentHP = 0;
 			}
 		}
@@ -134,10 +149,21 @@ namespace Character
 			return _characterStat.Attack;
 		}
 
+		public int GetCurrentHP()
+		{
+			return _characterStat.CurrentHP;
+		}
+
 		public void Attack(UnitController otherCharacter)
 		{
 			// Attack logic
 			otherCharacter.TakeDamage(GetAttackDamage());
+		}
+
+		public void BaseAttack()
+		{
+			// Base attack logic
+			Attack(enemyCharactersManager.GetUnitController(0));
 		}
 
 		public void OnActionStateChanged(CharacterActionState characterActionState)

@@ -13,6 +13,25 @@ namespace Battle
 			this.characters = characters;
 		}
 
+		public void UpdateCharacters(List<GameObject> characterGameObjects)
+		{
+			characters.Clear();
+			foreach (var characterGameObject in characterGameObjects)
+			{
+				if (characterGameObject == null)
+				{
+					Debug.LogError("Character GameObject is null");
+					continue;
+				}
+				
+				var unitController = characterGameObject.GetComponent<UnitController>();
+				if (unitController != null)
+				{
+					characters.Add(unitController);
+				}
+			}
+		}
+
 		public UnitController GetUnitController(int index)
 		{
 			if (index < 0 || index >= characters.Count)

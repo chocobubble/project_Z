@@ -18,6 +18,8 @@ namespace Battle
 		public bool ShouldCharacterSpawn { get; set; }
 		private bool shouldCharactersReposition = false;
 
+		public Action<List<GameObject>, List<GameObject>> OnCharacterListChanged;
+
 		public TurnPhase CurrentTurnPhase 
 		{
 			get { return turnPhase; }
@@ -27,11 +29,32 @@ namespace Battle
 				{
 					Debug.Log("TurnPhase changed from " + turnPhase + " to " + value);
 					turnPhase = value;
+					OnPhaseChanged(turnPhase);
 				}
 				else 
 				{
 					Debug.Log("TurnPhase is already " + value);
 				}
+			}
+		}
+
+		private void OnPhaseChanged(TurnPhase turnPhase)
+		{
+			switch (turnPhase)
+			{
+				case TurnPhase.None:
+					break;
+				case TurnPhase.Spawning:
+					break;
+				case TurnPhase.PreAttack:
+					break;
+				case TurnPhase.Attack:
+				 	// OnAttackPhase();
+					break;
+				case TurnPhase.PostAttack:
+					break;
+				case TurnPhase.Positioning:
+					break;
 			}
 		}
 
@@ -81,7 +104,7 @@ namespace Battle
 					CurrentTurnPhase = TurnPhase.Attack;
 					break;
 				case TurnPhase.Attack:
-					OnAttackPhase();
+				 	OnAttackPhase();
 					CurrentTurnPhase = TurnPhase.PostAttack;
 					break;
 				case TurnPhase.PostAttack:
@@ -99,6 +122,18 @@ namespace Battle
 					// }
 					break;
 			}
+		}
+
+		private bool IsMovingToTargetEnd()
+		{
+			return playerCharacters[0].GetComponent<UnitController>().CharacterActionState == CharacterActionState.Attacking
+				&& enemyCharacters[0].GetComponent<UnitController>().CharacterActionState == CharacterActionState.Attacking;
+		}
+
+		private void ActionBaseAttack()
+		{
+			playerCharacters[0].GetComponent<UnitController>().BaseAttack();
+			enemyCharacters[0].GetComponent<UnitController>().BaseAttack();
 		}
 
 		private void RepositionCharacters()
@@ -122,11 +157,14 @@ namespace Battle
 
 							// Set the base position of the character
 							playerCharacters[i].GetComponent<UnitController>().SetBasePosition(BattleConstants.PLAYER_CHARACTER_POSITIONS[i]);
+							playerCharacters[i].GetComponent<UnitController>().SetCharacterActionState(CharacterActionState.Moving);
 							break;
 						}
 					}
 					continue;
 				}
+
+				// 뭐지? 이게 왜 필요한거지?
 				var characterActionState = playerCharacters[i].GetComponent<UnitController>().CharacterActionState;
 				if (characterActionState != CharacterActionState.Idle)
 				{
@@ -146,8 +184,8 @@ namespace Battle
 							enemyCharacters[j] = null;
 
 							// Set the base position of the character
-							playerCharacters[i].GetComponent<UnitController>().SetBasePosition(BattleConstants.ENEMY_CHARACTER_POSITIONS[i]);
-							playerCharacters[i].GetComponent<UnitController>().SetCharacterActionState(CharacterActionState.Moving);
+							enemyCharacters[i].GetComponent<UnitController>().SetBasePosition(BattleConstants.ENEMY_CHARACTER_POSITIONS[i]);
+							enemyCharacters[i].GetComponent<UnitController>().SetCharacterActionState(CharacterActionState.Moving);
 							break;
 						}
 					}
@@ -160,6 +198,7 @@ namespace Battle
 				}
 			}
 
+			OnCharacterListChanged?.Invoke(playerCharacters, enemyCharacters);
 			CurrentTurnPhase = TurnPhase.PreAttack;
 		}
 
