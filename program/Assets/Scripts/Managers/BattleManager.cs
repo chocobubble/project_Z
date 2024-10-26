@@ -19,6 +19,7 @@ namespace Battle
 		private BattleState battleState;
 		private TurnPhase turnPhase;
 		public Action<BattleState> OnBattleStateChanged;
+		private PlayerStats playerStats;
 
 		public BattleState CurrentBattleState 
 		{
@@ -38,9 +39,15 @@ namespace Battle
 			}
 		}
 
-
 		public void OnEnable()
 		{
+			playerStats = new PlayerStats(
+				BattleConstants.PLAYER_STARTING_HEART,
+				BattleConstants.PLAYER_STARTING_GOLD,
+				BattleConstants.PLAYER_STARTING_TURN,
+				BattleConstants.PLAYER_STARTING_WIN_STREAK
+			);
+
 			Debug.Log("BattleManager OnEnable");
 			characterSpawner = characterSpawnerGameObject.GetComponent<CharacterSpawner>();
 			playerCharacterBundles = new List<CharacterBundle>();
@@ -72,7 +79,22 @@ namespace Battle
 
 		public void Update()
 		{
-
+			switch (CurrentBattleState)
+			{
+				case BattleState.None:
+					break;
+				case BattleState.Setup:
+					// ChangeBattleState(BattleState.Start);
+					break;
+				case BattleState.Start:
+				 	if (turnManager.CurrentTurnPhase == TurnPhase.End)
+					{
+						ChangeBattleState(BattleState.Setup);
+					}
+					break;
+				case BattleState.End:
+					break;
+			}
 		}
 
 		private void SpawnCharacters()
@@ -106,7 +128,7 @@ namespace Battle
 			characterSpawner.RemoveCharacter();
 		}
 
-		private void ChangeBattleState(BattleState battleState)
+		public void ChangeBattleState(BattleState battleState)
 		{
 			CurrentBattleState = battleState;	
 		}
@@ -119,11 +141,11 @@ namespace Battle
 				case BattleState.None:
 					break;
 				case BattleState.Setup:
-					SpawnCharacters();
-					ChangeBattleState(BattleState.Start);
+					turnManager.gameObject.SetActive(false);
 					break;
 				case BattleState.Start:
 					turnManager.gameObject.SetActive(true);
+					SpawnCharacters();
 					turnManager.CurrentTurnPhase = TurnPhase.PreAttack;
 					// ChangeBattleState(BattleState.End);
 					break;
@@ -131,6 +153,16 @@ namespace Battle
 					RemoveCharacters();
 					break;
 			}
+		}
+
+		private void SpawnCharactersForSetup()
+		{
+
+		}
+
+		public PlayerStats GetPlayerStats()
+		{
+			return playerStats;
 		}
 	}
 }	

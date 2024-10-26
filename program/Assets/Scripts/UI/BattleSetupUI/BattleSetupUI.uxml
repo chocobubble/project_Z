@@ -2,12 +2,18 @@
     <engine:VisualElement name="base-container" style="flex-grow: 1;">
         <engine:VisualElement name="top-container" style="flex-grow: 0.15; flex-shrink: 0.15; flex-direction: row; justify-content: space-between;">
             <engine:VisualElement name="top-left-container" style="flex-grow: 1; flex-direction: row;">
-                <engine:VisualElement name="coin-container" style="flex-grow: 1; border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px;">
+                <engine:VisualElement name="coin-container" style="flex-grow: 1; border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; background-color: rgba(227, 213, 72, 0.44);">
                     <engine:Label text="Label" name="coin-label" />
                 </engine:VisualElement>
-                <engine:VisualElement name="heart-container" style="flex-grow: 1;" />
-                <engine:VisualElement name="turn-container" style="flex-grow: 1;" />
-                <engine:VisualElement name="winbreak-container" style="flex-grow: 1;" />
+                <engine:VisualElement name="heart-container" style="flex-grow: 1; background-color: rgba(188, 79, 79, 0.5);">
+                    <engine:Label text="Label" name="heart-label" />
+                </engine:VisualElement>
+                <engine:VisualElement name="turn-container" style="flex-grow: 1; background-color: rgba(64, 83, 164, 0.55);">
+                    <engine:Label text="Label" name="turn-label" />
+                </engine:VisualElement>
+                <engine:VisualElement name="winstreak-container" style="flex-grow: 1; background-color: rgba(65, 135, 84, 0.58);">
+                    <engine:Label text="Label" name="winstreak-label" />
+                </engine:VisualElement>
             </engine:VisualElement>
             <engine:VisualElement name="top-right-container" style="flex-grow: 1; flex-direction: row; justify-content: flex-end;">
                 <engine:Button text="Deck" name="deck-button" class="ui_boxes" />

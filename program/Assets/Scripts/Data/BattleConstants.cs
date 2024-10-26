@@ -1,3 +1,4 @@
+using Unity.Transforms;
 using UnityEngine;
 
 namespace Data 
@@ -12,6 +13,10 @@ namespace Data
 		public static Vector3 PLAYER_ATTACK_POSITION = new Vector3(-0.5f, 0, 0);
 		public static Vector3 DEAD_POSITION = new Vector3(0, 10, 0);
 
+		public static int PLAYER_STARTING_HEART = 5;
+		public static int PLAYER_STARTING_GOLD = 10;
+		public static int PLAYER_STARTING_TURN = 1;
+		public static int PLAYER_STARTING_WIN_STREAK = 0;
 		// positions of the player characters
 		public static Vector3[] PLAYER_CHARACTER_POSITIONS = new Vector3[]
 		{

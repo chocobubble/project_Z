@@ -76,11 +76,6 @@ namespace Battle
 
 			turnPhase = TurnPhase.None;
 
-		}
-
-		void Start()
-		{
-			Debug.Log("TurnManager Start");
 			// 단순히 괄호 안에 숫자만 넣으면 용량만 정하는 거라 작동을 안한다.
 			// 그래서 null로 초기화를 해줘야 한다.
 			playerCharacters = new List<GameObject>();
@@ -90,6 +85,12 @@ namespace Battle
 				playerCharacters.Add(null);
 				enemyCharacters.Add(null);
 			}
+
+		}
+
+		void Start()
+		{
+			Debug.Log("TurnManager Start");
 		}
 
 		void Update()
@@ -200,8 +201,20 @@ namespace Battle
 				}
 			}
 
+			if (IsBattleEnd())
+			{
+				Debug.Log("Battle End");
+				CurrentTurnPhase = TurnPhase.End;
+				return;
+			}
+
 			OnCharacterListChanged?.Invoke(playerCharacters, enemyCharacters);
 			CurrentTurnPhase = TurnPhase.PreAttack;
+		}
+
+		private bool IsBattleEnd()
+		{
+			return playerCharacters[0] == null || enemyCharacters[0] == null;
 		}
 
 		private void OnAttackPhase()
