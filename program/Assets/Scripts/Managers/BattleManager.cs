@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Data;
 using System;
 using Unity.Entities.UniversalDelegates;
+using Setup;
+using BattleUI;
 
 namespace Battle 
 {
@@ -14,12 +16,15 @@ namespace Battle
 		private CharactersManager playerCharactersManager;
 		private CharactersManager enemyCharactersManager;
 		private CharacterSpawner characterSpawner;
+		public SetupManager setupManager;
 		public TurnManager turnManager;
 		public GameObject characterSpawnerGameObject;
 		private BattleState battleState;
 		private TurnPhase turnPhase;
 		public Action<BattleState> OnBattleStateChanged;
 		private PlayerStats playerStats;
+		private CharacterDatabase characterDatabase;	
+		public BattleSetupUIController battleSetupUIController;
 
 		public BattleState CurrentBattleState 
 		{
@@ -59,8 +64,32 @@ namespace Battle
 				enemyCharacterBundles.Add(new CharacterBundle(BattleConstants.ENEMY_CHARACTERS_DATA[i]));
 			}
 
+			if (battleSetupUIController == null)
+			{
+				battleSetupUIController = GameObject.Find("BattleSetupUI").GetComponent<BattleSetupUIController>();
+			}
+
+
+			if (setupManager == null)
+			{
+				setupManager = GameObject.Find("SetupManager").GetComponent<SetupManager>();
+			}
+			setupManager.SetCharacterSpawner(characterSpawner);
+			
+			if (characterDatabase == null)
+			{
+				characterDatabase = new CharacterDatabase();
+			}
+			setupManager.SetCharacterDatabase(characterDatabase);
+			setupManager.gameObject.SetActive(true);
+
 			OnBattleStateChanged += OnBattleStateChangedHandler;
 			ChangeBattleState(BattleState.Setup);
+		}
+
+		public void OnDisable()
+		{
+			setupManager.gameObject.SetActive(false);
 		}
 
 		public void Start()
@@ -84,7 +113,7 @@ namespace Battle
 				case BattleState.None:
 					break;
 				case BattleState.Setup:
-					// ChangeBattleState(BattleState.Start);
+				
 					break;
 				case BattleState.Start:
 				 	if (turnManager.CurrentTurnPhase == TurnPhase.End)
@@ -142,6 +171,8 @@ namespace Battle
 					break;
 				case BattleState.Setup:
 					turnManager.gameObject.SetActive(false);
+					setupManager.gameObject.SetActive(true);
+					battleSetupUIController.gameObject.SetActive(true);
 					break;
 				case BattleState.Start:
 					turnManager.gameObject.SetActive(true);
@@ -164,5 +195,15 @@ namespace Battle
 		{
 			return playerStats;
 		}
+
+		public SetupManager GetSetupManager()
+		{
+			return setupManager;
+		}
+	
+		public List<CharacterBundle> GetPlayerCharacterBundles()
+		{
+			return playerCharacterBundles;
+		}	
 	}
 }	

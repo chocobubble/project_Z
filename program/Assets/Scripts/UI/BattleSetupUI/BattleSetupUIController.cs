@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using Battle;
+using Character;
 using Data;
+using Setup;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -17,6 +20,20 @@ namespace BattleUI
 		private Button setupEndButton;
 		private PlayerStats playerStats;
 		public BattleManager battleManager;
+		public SetupManager	setupManager;
+		private Button playerCharacterButton1;
+		private Button playerCharacterButton2;
+		private Button playerCharacterButton3;
+		private Button playerCharacterButton4;
+		private Button purchaseableCharacterButton1;
+		private Button purchaseableCharacterButton2;
+		private Button purchaseableCharacterButton3;
+		private Button purchaseableCharacterButton4;
+		private Button purchaseableCharacterButton5;
+		[SerializeField]
+		private List<Button> purchaseableCharacterButtons;
+		[SerializeField]
+		private List<Button> playerCharacterButtons;
 
 		private void OnEnable()
 		{
@@ -43,11 +60,42 @@ namespace BattleUI
 				playerStats.OnTurnChanged += UpdateTurn;
 				playerStats.OnWinStreakChanged += UpdateWinStreak;
 				UpdatePlayerStats();
+
+				setupManager = battleManager.GetSetupManager();
 			}
 			else 
 			{
 				Debug.LogError("BattleManager is null");
 			}
+			playerCharacterButton1 = root.Q<Button>("player-character-button1");
+			playerCharacterButton2 = root.Q<Button>("player-character-button2");
+			playerCharacterButton3 = root.Q<Button>("player-character-button3");
+			playerCharacterButton4 = root.Q<Button>("player-character-button4");
+
+
+			playerCharacterButtons = new List<Button>
+			{
+				playerCharacterButton1,
+				playerCharacterButton2,
+				playerCharacterButton3,
+				playerCharacterButton4
+			};
+			purchaseableCharacterButton1 = root.Q<Button>("purchaseable-character-button1");
+			purchaseableCharacterButton2 = root.Q<Button>("purchaseable-character-button2");
+			purchaseableCharacterButton3 = root.Q<Button>("purchaseable-character-button3");
+			purchaseableCharacterButton4 = root.Q<Button>("purchaseable-character-button4");
+			purchaseableCharacterButton5 = root.Q<Button>("purchaseable-character-button5");
+
+
+			purchaseableCharacterButtons = new List<Button>
+			{
+				purchaseableCharacterButton1,
+				purchaseableCharacterButton2,
+				purchaseableCharacterButton3,
+				purchaseableCharacterButton4,
+				purchaseableCharacterButton5
+			};
+			UpdateCharacterButtonsText();
 		}
 
 		private void UpdatePlayerStats()
@@ -108,6 +156,44 @@ namespace BattleUI
 		{
 			Debug.Log("Deactivating BattleSetupUI");
 			gameObject.SetActive(false);
+		}
+
+		public void UpdateCharacterButtonsText()
+		{
+			if (battleManager == null)
+			{
+				Debug.LogError("BattleManager is null");
+				return;
+			}
+
+			var playerCharacterBundles = battleManager.GetPlayerCharacterBundles();
+			var purchaseableCharacters = setupManager.GetPurchaseableCharacters();
+
+			for (int i = 0; i < playerCharacterBundles.Count; i++)
+			{
+				UpdateCharacterButtonText(playerCharacterButtons[i], playerCharacterBundles[i]);
+			}
+
+			for (int i = 0; i < purchaseableCharacters.Count; i++)
+			{
+				UpdateCharacterButtonText(purchaseableCharacterButtons[i], purchaseableCharacters[i].GetComponent<UnitController>().GetCharacterBundle());
+			}
+		}
+
+		private void UpdateCharacterButtonText(Button button, CharacterBundle characterBundle)
+		{
+			if (button == null)
+			{
+				Debug.LogError("Button is null");
+				return;
+			}
+
+			if (characterBundle == null)
+			{
+				Debug.LogError("CharacterBundle is null");
+				return;
+			}
+			button.text = $"{characterBundle.GetCharacterId()}\n{characterBundle.GetCharacterStat().Attack} | {characterBundle.GetCharacterStat().HP}";
 		}
 	}
 }

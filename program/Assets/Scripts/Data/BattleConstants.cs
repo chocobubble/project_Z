@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -17,6 +18,28 @@ namespace Data
 		public static int PLAYER_STARTING_GOLD = 10;
 		public static int PLAYER_STARTING_TURN = 1;
 		public static int PLAYER_STARTING_WIN_STREAK = 0;
+
+		public static Vector3 BATTLE_SETUP_CAMERA_POSITION = new Vector3(-30, 0, -10);
+		public static Vector3 BATTLE_START_CAMERA_POSITION = new Vector3(0, 0, -10);
+
+		public static List<Vector3> PURCHASAEALBE_CHARACTER_POSITIONS = new List<Vector3>
+		{
+			new Vector3(-35, -2, 0),
+			new Vector3(-33, -2, 0),
+			new Vector3(-31, -2, 0),
+			new Vector3(-29, -2, 0),
+			// new Vector3(6, 0, 0),
+			// new Vector3(8, 0, 0),
+		};
+
+		public static List<Vector3> PLAYER_CHARACTER_POSITIONS_IN_SETUP = new List<Vector3>
+		{
+			new Vector3(-35, 2, 0),
+			new Vector3(-33, 2, 0),
+			new Vector3(-31, 2, 0),
+			new Vector3(-29, 2, 0),
+		};
+
 		// positions of the player characters
 		public static Vector3[] PLAYER_CHARACTER_POSITIONS = new Vector3[]
 		{

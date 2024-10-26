@@ -36,10 +36,27 @@ namespace Character
 			this.characterName = name;
 			this.characterStat = characterStat;
 		}
+
+		public CharacterBundle(CharacterBaseData characterBaseData)
+		{
+			this.characterId = characterBaseData.Id;
+			this.characterName = characterBaseData.Name;
+			this.characterStat = new CharacterStat(1, characterBaseData.Health, characterBaseData.Attack);
+		}
 	
 		public CharacterStat GetCharacterStat()
 		{
 			return characterStat;
+		}
+
+		public int GetCharacterId()
+		{
+			return characterId;
+		}
+
+		public string GetCharacterName()
+		{
+			return characterName;
 		}
 	}
 }
