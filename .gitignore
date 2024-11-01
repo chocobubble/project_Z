@@ -75,3 +75,10 @@ crashlytics-build.properties
 # ds store
 .DS_Store
 */.DS_Store
+
+
+# mono crash
+mono_crash.*
+
+# vscode
+.vscode/
