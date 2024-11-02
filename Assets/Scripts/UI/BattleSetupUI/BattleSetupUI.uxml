@@ -28,11 +28,11 @@
                 <engine:Button text="Button" name="player-character-button4" />
             </engine:VisualElement>
             <engine:VisualElement name="purchaseable-character-container" style="flex-grow: 1; flex-direction: row; justify-content: center;">
-                <engine:Button text="Button" name="puchaseable-character-button1" />
-                <engine:Button text="Button" name="puchaseable-character-button2" />
-                <engine:Button text="Button" name="puchaseable-character-button3" />
-                <engine:Button text="Button" name="puchaseable-character-button4" />
-                <engine:Button text="Button" name="puchaseable-character-button5" />
+                <engine:Button text="Button" name="purchaseable-character-button1" />
+                <engine:Button text="Button" name="purchaseable-character-button2" />
+                <engine:Button text="Button" name="purchaseable-character-button3" />
+                <engine:Button text="Button" name="purchaseable-character-button4" />
+                <engine:Button text="Button" name="purchaseable-character-button5" />
             </engine:VisualElement>
         </engine:VisualElement>
         <engine:VisualElement name="bot-container" style="flex-grow: 0.2; flex-shrink: 0.2; flex-direction: row; justify-content: space-between;">
