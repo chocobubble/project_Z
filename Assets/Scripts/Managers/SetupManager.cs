@@ -14,7 +14,7 @@ namespace Setup
 		[SerializeField]
 		private CharacterSpawner characterSpawner;
 		[SerializeField]
-		private List<CharacterBundle> purchaseableCharacters;
+		private List<CharacterBundle> purchasableCharacters;
 
 		void Start()
 		{
@@ -23,15 +23,15 @@ namespace Setup
 
 		void OnEnable()
 		{
-			purchaseableCharacters = new List<CharacterBundle>();
-			// SpawnPurchaseableCharacters();
+			purchasableCharacters = new List<CharacterBundle>();
+			// SpawnpurchasableCharacters();
 		}
 
 		void Update()
 		{
 		}
 
-		private void SpawnPurchaseableCharacters()
+		private void SpawnpurchasableCharacters()
 		{
 			if (characterDatabase == null)
 			{
@@ -55,13 +55,13 @@ namespace Setup
 		{
 			this.characterSpawner = characterSpawner;
 		}
-		public void SetPurchaseableCharacters(List<CharacterBundle> purchaseableCharacters)
+		public void SetpurchasableCharacters(List<CharacterBundle> purchasableCharacters)
 		{
-			this.purchaseableCharacters = purchaseableCharacters;
+			this.purchasableCharacters = purchasableCharacters;
 		}
-		public List<CharacterBundle> GetPurchaseableCharacters()
+		public List<CharacterBundle> GetpurchasableCharacters()
 		{
-			return purchaseableCharacters;
+			return purchasableCharacters;
 		}
 		public CharacterDatabase GetCharacterDatabase()
 		{

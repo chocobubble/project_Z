@@ -60,7 +60,8 @@ namespace Battle
 
 			for (int i = 0; i < BattleConstants.PLAYER_CHARACTERS_DATA.Length; i++)
 			{
-				playerCharacterBundles.Add(new CharacterBundle(BattleConstants.PLAYER_CHARACTERS_DATA[i]));
+				// playerCharacterBundles.Add(new CharacterBundle(BattleConstants.PLAYER_CHARACTERS_DATA[i]));
+				playerCharacterBundles.Add(null);
 				enemyCharacterBundles.Add(new CharacterBundle(BattleConstants.ENEMY_CHARACTERS_DATA[i]));
 			}
 

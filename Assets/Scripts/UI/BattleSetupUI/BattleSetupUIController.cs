@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using Battle;
 using Character;
 using Data;
 using Setup;
+using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -21,36 +23,46 @@ namespace BattleUI
 		private PlayerStats playerStats;
 		public BattleManager battleManager;
 		public SetupManager	setupManager;
+		private Button playerCharacterButton0;
 		private Button playerCharacterButton1;
 		private Button playerCharacterButton2;
 		private Button playerCharacterButton3;
-		private Button playerCharacterButton4;
-		private Button purchaseableCharacterButton1;
-		private Button purchaseableCharacterButton2;
-		private Button purchaseableCharacterButton3;
-		private Button purchaseableCharacterButton4;
-		private Button purchaseableCharacterButton5;
+		private Button purchasableCharacterButton0;
+		private Button purchasableCharacterButton1;
+		private Button purchasableCharacterButton2;
+		private Button purchasableCharacterButton3;
+		private Button purchasableCharacterButton4;
 		[SerializeField]
-		private List<CharacterButton> purchaseableCharacterButtons;
-		// private List<Button> purchaseableCharacterButtons;
+		private List<CharacterButton> characterButtons;
+		[SerializeField]
+		private List<CharacterButton> purchasableCharacterButtons;
+		// private List<Button> purchasableCharacterButtons;
 		[SerializeField]
 		private List<CharacterButton> playerCharacterButtons;
 		// private List<Button> playerCharacterButtons;
 		[SerializeField]
 		private CharacterBundle selectedCharacterBundle;
+		[SerializeField]
+		private CharacterButton selectedCharacterButton;
+
+		public CharacterButton SelectedCharacterButton
+		{
+			get { return selectedCharacterButton; }
+			set {
+				selectedCharacterButton = value;
+				selectedCharacterBundle = value?.GetCharacterBundle();
+			}
+		}
 
 		private void OnEnable()
 		{
 			var root = GetComponent<UIDocument>().rootVisualElement;
-
 			coinLabel = root.Q<Label>("coin-label");
 			winStreakLabel = root.Q<Label>("winstreak-label");
 			turnLabel = root.Q<Label>("turn-label");
 			heartLabel = root.Q<Label>("heart-label");
-
 			rerollButton = root.Q<Button>("reroll-button");
 			setupEndButton = root.Q<Button>("setup-end-button");
-
 			rerollButton.clicked += Reroll;
 			setupEndButton.clicked += SetupEnd;
 
@@ -66,69 +78,51 @@ namespace BattleUI
 				UpdatePlayerStats();
 
 				setupManager = battleManager.GetSetupManager();
-			}
-			else 
-			{
-				Debug.LogError("BattleManager is null");
-			}
+			} else Debug.LogError("BattleManager is null");
+
+			playerCharacterButton0 = root.Q<Button>("player-character-button0");
 			playerCharacterButton1 = root.Q<Button>("player-character-button1");
 			playerCharacterButton2 = root.Q<Button>("player-character-button2");
 			playerCharacterButton3 = root.Q<Button>("player-character-button3");
-			playerCharacterButton4 = root.Q<Button>("player-character-button4");
-
-
-			// playerCharacterButtons = new List<Button>
-			// {
-			// 	playerCharacterButton1,
-			// 	playerCharacterButton2,
-			// 	playerCharacterButton3,
-			// 	playerCharacterButton4
-			// };
-			purchaseableCharacterButton1 = root.Q<Button>("purchaseable-character-button1");
-			purchaseableCharacterButton2 = root.Q<Button>("purchaseable-character-button2");
-			purchaseableCharacterButton3 = root.Q<Button>("purchaseable-character-button3");
-			purchaseableCharacterButton4 = root.Q<Button>("purchaseable-character-button4");
-			purchaseableCharacterButton5 = root.Q<Button>("purchaseable-character-button5");
-
-
-			// purchaseableCharacterButtons = new List<Button>
-			// {
-			// 	purchaseableCharacterButton1,
-			// 	purchaseableCharacterButton2,
-			// 	purchaseableCharacterButton3,
-			// 	purchaseableCharacterButton4,
-			// 	purchaseableCharacterButton5
-			// };
-			CreatePurchaseableCharacters();
+			purchasableCharacterButton0 = root.Q<Button>("purchasable-character-button0");
+			purchasableCharacterButton1 = root.Q<Button>("purchasable-character-button1");
+			purchasableCharacterButton2 = root.Q<Button>("purchasable-character-button2");
+			purchasableCharacterButton3 = root.Q<Button>("purchasable-character-button3");
+			purchasableCharacterButton4 = root.Q<Button>("purchasable-character-button4");
+			
+			characterButtons = new List<CharacterButton>();
+			
+			CreatepurchasableCharacters();
 			InitializePlayerCharacterButtons();
-			InitializePurchaseableCharacterButtons();
+			InitializepurchasableCharacterButtons();
+			InitializeCharacterButtons();
 			UpdateCharacterButtonsText();
 		}
 
-		private void CreatePurchaseableCharacters()
+		private void CreatepurchasableCharacters()
 		{
 			var characterDatabase = setupManager.GetCharacterDatabase();
 			// select 5 random characters in the database
 			var characterDataList = characterDatabase.GetCharacterDataList();
-			var purchaseableCharacters = new List<CharacterBundle>();
+			var purchasableCharacters = new List<CharacterBundle>();
 			var random = new System.Random();
 			for (int i = 0; i < 5; i++)
 			{
 				var randomIndex = random.Next(0, characterDataList.Count);
 				var characterBundle = new CharacterBundle(characterDataList[randomIndex]);
-				purchaseableCharacters.Add(characterBundle);
+				purchasableCharacters.Add(characterBundle);
 			}
-			setupManager.SetPurchaseableCharacters(purchaseableCharacters);
+			setupManager.SetpurchasableCharacters(purchasableCharacters);
 		}
 
 		private void InitializePlayerCharacterButtons()
 		{
 			var playerCharacterBundles = battleManager.GetPlayerCharacterBundles();
 			playerCharacterButtons = new List<CharacterButton> {
-				new CharacterButton(playerCharacterButton1, playerCharacterBundles[0]),
-				new CharacterButton(playerCharacterButton2, playerCharacterBundles[1]),
-				new CharacterButton(playerCharacterButton3, playerCharacterBundles[2]),
-				new CharacterButton(playerCharacterButton4, playerCharacterBundles[3])
+				new CharacterButton(0, playerCharacterButton0, playerCharacterBundles[0], CharacterButtonType.PLAYER),
+				new CharacterButton(1, playerCharacterButton1, playerCharacterBundles[1], CharacterButtonType.PLAYER),
+				new CharacterButton(2, playerCharacterButton2, playerCharacterBundles[2], CharacterButtonType.PLAYER),
+				new CharacterButton(3, playerCharacterButton3, playerCharacterBundles[3], CharacterButtonType.PLAYER)
 			};	
 
 			foreach (var playerButton in playerCharacterButtons)
@@ -138,48 +132,105 @@ namespace BattleUI
 					Debug.Log("Player Button is null");
 					return;
 				}
-				var button = playerButton.GetButtonUI();	
-				var characterBundle = playerButton.GetCharacterBundle();
+				characterButtons.Add(playerButton);
+			}
+		}
+		private void InitializeCharacterButtons()
+		{
+			foreach (var characterButton in characterButtons)
+			{
+				var button = characterButton.GetButtonUI();
+				var characterBundle = characterButton.GetCharacterBundle();
 				button.clicked += () =>
 				{
-					selectedCharacterBundle = characterBundle; 
-					if (selectedCharacterBundle != null)
-						Debug.Log($"Selected Character : {selectedCharacterBundle.GetCharacterId()}");
+					// if (button.focusController.focusedElement == button)
+					// {
+					// 	Debug.Log("Button is already focused");
+					// 	button.Blur();
+					// }
+					OnCharacterButtonClicked(characterButton);
 				};
+				button.AddToClassList("selected");
 			}
 		}
 
-		private void OnPlayerCharacterButtonClicked()
+		private void OnCharacterButtonClicked(CharacterButton characterButton)
 		{
-
-		}
-
-		private void InitializePurchaseableCharacterButtons()
-		{
-			var purchaseableCharacters = setupManager.GetPurchaseableCharacters();
-			purchaseableCharacterButtons = new List<CharacterButton> {
-				new CharacterButton(purchaseableCharacterButton1, purchaseableCharacters[0]),
-				new CharacterButton(purchaseableCharacterButton2, purchaseableCharacters[1]),
-				new CharacterButton(purchaseableCharacterButton3, purchaseableCharacters[2]),
-				new CharacterButton(purchaseableCharacterButton4, purchaseableCharacters[3]),
-				new CharacterButton(purchaseableCharacterButton5, purchaseableCharacters[4])
-			};	
-
-			foreach (var purchaseableButton in purchaseableCharacterButtons)
+			Debug.Log("Character Button Clicked");
+			if (characterButton == null) 
 			{
-				if (purchaseableButton == null || purchaseableButton.GetButtonUI() == null)
+				Debug.LogError("Character Button is null");
+				return;
+			}
+			if (SelectedCharacterButton == null)
+			{
+				SelectedCharacterButton = characterButton;
+				return;
+			}
+			if (SelectedCharacterButton == characterButton)
+			{
+				characterButton.GetButtonUI().Blur();
+				SelectedCharacterButton = null;
+				return;
+			}
+			if (SelectedCharacterButton.GetCharacterButtonType() == CharacterButtonType.PURCHASABLE
+				&& characterButton.GetCharacterButtonType() == CharacterButtonType.PLAYER)
+			{
+				// Check index of player character buttons and empty slot
+				var characterButtonIndex = characterButton.GetButtonIndex();
+				var playerCharacterBundles = battleManager.GetPlayerCharacterBundles(); 
+
+				// TODO: 같은 캐릭터면 합체될 수 있게 변경하기
+				if (playerCharacterBundles[characterButtonIndex] != null)
 				{
-					Debug.Log("Purchaseable Button is null");
+					Debug.Log("Player character already exists in the slot");
 					return;
 				}
-				var button = purchaseableButton.GetButtonUI();	
-				var characterBundle = purchaseableButton.GetCharacterBundle();
-				button.clicked += () =>
+				
+				// check if the player has enough gold
+				var playerStats = battleManager.GetPlayerStats();
+				var characterCost = BattleConstants.PURCHASE_CHARACTER_PRICE; 
+				if (playerStats.Gold < characterCost)
 				{
-					selectedCharacterBundle = characterBundle; 
-					if (selectedCharacterBundle != null)
-						Debug.Log($"Selected Character : {selectedCharacterBundle.GetCharacterId()}");
-				};
+					Debug.Log("Not enough gold to purchase character");
+					return;
+				}
+				// Purchase Character
+				var purchasableCharacterBundle = SelectedCharacterButton.GetCharacterBundle();
+				playerCharacterBundles[characterButtonIndex] = new CharacterBundle(purchasableCharacterBundle);
+				playerStats.Gold -= characterCost;	
+
+				// Update player character button
+				characterButton.SetCharacterBundle(playerCharacterBundles[characterButtonIndex]);
+				// Make selected character button to null
+				SelectedCharacterButton.Reset();
+				SelectedCharacterButton.GetButtonUI().Blur();
+				SelectedCharacterButton = null;
+				UpdateCharacterButtonsText();
+
+				return;
+			}
+		}
+
+		private void InitializepurchasableCharacterButtons()
+		{
+			var purchasableCharacters = setupManager.GetpurchasableCharacters();
+			purchasableCharacterButtons = new List<CharacterButton> {
+				new CharacterButton(0, purchasableCharacterButton0, purchasableCharacters[0], CharacterButtonType.PURCHASABLE),
+				new CharacterButton(1, purchasableCharacterButton1, purchasableCharacters[1], CharacterButtonType.PURCHASABLE),
+				new CharacterButton(2, purchasableCharacterButton2, purchasableCharacters[2], CharacterButtonType.PURCHASABLE),
+				new CharacterButton(3, purchasableCharacterButton3, purchasableCharacters[3], CharacterButtonType.PURCHASABLE),
+				new CharacterButton(4, purchasableCharacterButton4, purchasableCharacters[4], CharacterButtonType.PURCHASABLE)
+			};	
+
+			foreach (var purchasableButton in purchasableCharacterButtons)
+			{
+				if (purchasableButton == null || purchasableButton.GetButtonUI() == null)
+				{
+					Debug.Log("purchasable Button is null");
+					return;
+				}
+				characterButtons.Add(purchasableButton);
 			}
 		}
 
@@ -256,39 +307,10 @@ namespace BattleUI
 				playerButton.UpdateCharacterButtonsText();
 			}
 
-			foreach (var purchaseableButton in purchaseableCharacterButtons)
+			foreach (var purchasableButton in purchasableCharacterButtons)
 			{
-				purchaseableButton.UpdateCharacterButtonsText();
+				purchasableButton.UpdateCharacterButtonsText();
 			}
-
-			// var playerCharacterBundles = battleManager.GetPlayerCharacterBundles();
-			// var purchaseableCharacters = setupManager.GetPurchaseableCharacters();
-
-			// for (int i = 0; i < playerCharacterBundles.Count; i++)
-			// {
-			// 	UpdateCharacterButtonText(playerCharacterButtons[i], playerCharacterBundles[i]);
-			// }
-
-			// for (int i = 0; i < purchaseableCharacters.Count; i++)
-			// {
-			// 	UpdateCharacterButtonText(purchaseableCharacterButtons[i], purchaseableCharacters[i].GetComponent<UnitController>().GetCharacterBundle());
-			// }
 		}
-
-		// private void UpdateCharacterButtonText(Button button, CharacterBundle characterBundle)
-		// {
-		// 	if (button == null)
-		// 	{
-		// 		Debug.LogError("Button is null");
-		// 		return;
-		// 	}
-
-		// 	if (characterBundle == null)
-		// 	{
-		// 		Debug.LogError("CharacterBundle is null");
-		// 		return;
-		// 	}
-		// 	button.text = $"{characterBundle.GetCharacterId()}\n{characterBundle.GetCharacterStat().Attack} | {characterBundle.GetCharacterStat().HP}";
-		// }
 	}
 }

@@ -1,4 +1,5 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Scripts/UI/BattleSetupUI/OnButtonClicked.uss?fileID=7433441132597879392&amp;guid=ef53c86c2143841589aa9062fac0722b&amp;type=3#OnButtonClicked" />
     <engine:VisualElement name="base-container" style="flex-grow: 1;">
         <engine:VisualElement name="top-container" style="flex-grow: 0.15; flex-shrink: 0.15; flex-direction: row; justify-content: space-between;">
             <engine:VisualElement name="top-left-container" style="flex-grow: 1; flex-direction: row;">
@@ -22,17 +23,17 @@
         </engine:VisualElement>
         <engine:VisualElement name="mid-container" style="flex-grow: 1;">
             <engine:VisualElement name="player-character-container" style="flex-grow: 1; flex-direction: row; justify-content: center;">
+                <engine:Button text="Button" name="player-character-button0" />
                 <engine:Button text="Button" name="player-character-button1" />
                 <engine:Button text="Button" name="player-character-button2" />
                 <engine:Button text="Button" name="player-character-button3" />
-                <engine:Button text="Button" name="player-character-button4" />
             </engine:VisualElement>
-            <engine:VisualElement name="purchaseable-character-container" style="flex-grow: 1; flex-direction: row; justify-content: center;">
-                <engine:Button text="Button" name="purchaseable-character-button1" />
-                <engine:Button text="Button" name="purchaseable-character-button2" />
-                <engine:Button text="Button" name="purchaseable-character-button3" />
-                <engine:Button text="Button" name="purchaseable-character-button4" />
-                <engine:Button text="Button" name="purchaseable-character-button5" />
+            <engine:VisualElement name="purchasable-character-container" style="flex-grow: 1; flex-direction: row; justify-content: center;">
+                <engine:Button text="Button" name="purchasable-character-button0" />
+                <engine:Button text="Button" name="purchasable-character-button1" />
+                <engine:Button text="Button" name="purchasable-character-button2" />
+                <engine:Button text="Button" name="purchasable-character-button3" />
+                <engine:Button text="Button" name="purchasable-character-button4" />
             </engine:VisualElement>
         </engine:VisualElement>
         <engine:VisualElement name="bot-container" style="flex-grow: 0.2; flex-shrink: 0.2; flex-direction: row; justify-content: space-between;">
