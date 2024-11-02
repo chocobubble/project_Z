@@ -100,6 +100,8 @@ namespace Battle
 				case TurnPhase.None:
 					break;
 				case TurnPhase.Spawning:
+					CheckCharactersState();
+					// CurrentTurnPhase = TurnPhase.PreAttack;
 					break;
 				case TurnPhase.PreAttack:
 					CurrentTurnPhase = TurnPhase.Attack;
@@ -144,6 +146,7 @@ namespace Battle
 
 		private void CheckCharactersState()
 		{
+			bool isAllCharactersIdle = true;
 			// Debug.Log("CheckCharactersState");
 			for (int i = 0; i < playerCharacters.Count; i++)
 			{
@@ -160,6 +163,8 @@ namespace Battle
 							playerCharacters[i].GetComponent<UnitController>().SetBasePosition(BattleConstants.PLAYER_CHARACTER_POSITIONS[i]);
 							playerCharacters[i].GetComponent<UnitController>().SetTargetPosition(BattleConstants.PLAYER_CHARACTER_POSITIONS[i]);
 							playerCharacters[i].GetComponent<UnitController>().SetCharacterActionState(CharacterActionState.Moving);
+							// 이거 안넣었더니 아래에서 안걸러진다 왤까?
+							isAllCharactersIdle = false;
 							break;
 						}
 					}
@@ -170,7 +175,7 @@ namespace Battle
 				var characterActionState = playerCharacters[i].GetComponent<UnitController>().CharacterActionState;
 				if (characterActionState != CharacterActionState.Idle)
 				{
-					return;
+					isAllCharactersIdle = false;
 				}
 			}
 
@@ -189,6 +194,7 @@ namespace Battle
 							enemyCharacters[i].GetComponent<UnitController>().SetBasePosition(BattleConstants.ENEMY_CHARACTER_POSITIONS[i]);
 							enemyCharacters[i].GetComponent<UnitController>().SetTargetPosition(BattleConstants.ENEMY_CHARACTER_POSITIONS[i]);
 							enemyCharacters[i].GetComponent<UnitController>().SetCharacterActionState(CharacterActionState.Moving);
+							isAllCharactersIdle = false;
 							break;
 						}
 					}
@@ -197,8 +203,13 @@ namespace Battle
 				var characterActionState = enemyCharacters[i].GetComponent<UnitController>().CharacterActionState;
 				if (characterActionState != CharacterActionState.Idle)
 				{
-					return;
+					isAllCharactersIdle = false;
 				}
+			}
+			
+			if (!isAllCharactersIdle)
+			{
+				return;
 			}
 
 			if (IsBattleEnd())

@@ -26,6 +26,8 @@ namespace Battle
 		private CharacterDatabase characterDatabase;	
 		public BattleSetupUIController battleSetupUIController;
 
+		public GameObject DebugUIGameObject;
+
 		public BattleState CurrentBattleState 
 		{
 			get { return battleState; }
@@ -133,23 +135,33 @@ namespace Battle
 			var enemyCharacters = new List<UnitController>();
 			for (int i = 0; i < BattleConstants.PLAYER_CHARACTERS_DATA.Length; i++)
 			{
+				if (playerCharacterBundles[i] == null) continue;
 				var playerCharacter = characterSpawner.SpawnCharacter(playerCharacterBundles[i], BattleConstants.PLAYER_CHARACTER_POSITIONS[i]);
-				var enemyCharacter = characterSpawner.SpawnCharacter(enemyCharacterBundles[i], BattleConstants.ENEMY_CHARACTER_POSITIONS[i]);
 				turnManager.PlayerCharacters[i] = playerCharacter;
-				turnManager.EnemyCharacters[i] = enemyCharacter;
 				playerCharacters.Add(playerCharacter.GetComponent<UnitController>());
-				enemyCharacters.Add(enemyCharacter.GetComponent<UnitController>());
 				playerCharacter.GetComponent<UnitController>().SetBasePosition(BattleConstants.PLAYER_CHARACTER_POSITIONS[i]);
+			}
+
+			for (int i = 0; i < BattleConstants.PLAYER_CHARACTERS_DATA.Length; i++)
+			{
+				if (enemyCharacterBundles[i] == null) continue;
+				var enemyCharacter = characterSpawner.SpawnCharacter(enemyCharacterBundles[i], BattleConstants.ENEMY_CHARACTER_POSITIONS[i]);
+				turnManager.EnemyCharacters[i] = enemyCharacter;
+				enemyCharacters.Add(enemyCharacter.GetComponent<UnitController>());
 				enemyCharacter.GetComponent<UnitController>().SetBasePosition(BattleConstants.ENEMY_CHARACTER_POSITIONS[i]);
 			}
 
 			playerCharactersManager = new CharactersManager(playerCharacters);
 			enemyCharactersManager = new CharactersManager(enemyCharacters);
 
-			for (int i = 0; i < BattleConstants.PLAYER_CHARACTERS_DATA.Length; i++)
+			foreach (var playerCharacter in playerCharacters)
 			{
-				playerCharacters[i].SetCharactersManagers(playerCharactersManager, enemyCharactersManager);
-				enemyCharacters[i].SetCharactersManagers(enemyCharactersManager, playerCharactersManager);
+				playerCharacter.SetCharactersManagers(playerCharactersManager, enemyCharactersManager);
+			}
+
+			foreach (var enemyCharacter in enemyCharacters)
+			{
+				enemyCharacter.SetCharactersManagers(enemyCharactersManager, playerCharactersManager);
 			}
 		}
 
@@ -178,8 +190,10 @@ namespace Battle
 				case BattleState.Start:
 					turnManager.gameObject.SetActive(true);
 					SpawnCharacters();
-					turnManager.CurrentTurnPhase = TurnPhase.PreAttack;
+					// turnManager.CurrentTurnPhase = TurnPhase.PreAttack;
+					turnManager.CurrentTurnPhase = TurnPhase.Spawning;
 					// ChangeBattleState(BattleState.End);
+					DebugUIGameObject?.SetActive(true);
 					break;
 				case BattleState.End:
 					RemoveCharacters();

@@ -20,7 +20,6 @@ namespace Battle
 			{
 				if (characterGameObject == null)
 				{
-					Debug.LogError("Character GameObject is null");
 					continue;
 				}
 				

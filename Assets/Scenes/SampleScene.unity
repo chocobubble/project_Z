@@ -284,6 +284,7 @@ MonoBehaviour:
   turnManager: {fileID: 169606971}
   characterSpawnerGameObject: {fileID: 1318649342}
   battleSetupUIController: {fileID: 784441404}
+  DebugUIGameObject: {fileID: 754135998}
 --- !u!4 &436877001
 Transform:
   m_ObjectHideFlags: 0
@@ -466,7 +467,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterSpawner: {fileID: 0}
-  purchaseableCharacters: []
 --- !u!4 &563633273
 Transform:
   m_ObjectHideFlags: 0

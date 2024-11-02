@@ -117,6 +117,11 @@ namespace Character
 
 		public void SetCharacterBundle(CharacterBundle characterBundle)
 		{
+			if (characterBundle == null)
+			{
+				Debug.LogError("CharacterBundle is null");
+				return;
+			}
 			// Deep copy
 			_characterBundle = new CharacterBundle(characterBundle);
 			_characterStat = _characterBundle.GetCharacterStat();
@@ -215,7 +220,7 @@ namespace Character
 			float distanceToTargetPosition = Vector3.Distance(transform.position, targetPosition);
 			if (distanceToTargetPosition < 0.5f)
 			{
-				Debug.Log("Arrived at target position");
+				Debug.Log("Arrived at target position - targetPosition: " + targetPosition + " current position: " + transform.position);
 				return true;
 			}
 			else 
