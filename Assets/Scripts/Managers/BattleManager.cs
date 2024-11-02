@@ -271,6 +271,16 @@ namespace Battle
 		{
 			return playerCharacterBundles;
 		}	
+
+		public int GetCoin()
+		{
+			if (playerStats == null) 
+			{
+				CustomLogger.LogError("PlayerStats is null");
+				return 0;
+			}
+			return playerStats.Gold;
+		}
 #endregion
 	}
 }	

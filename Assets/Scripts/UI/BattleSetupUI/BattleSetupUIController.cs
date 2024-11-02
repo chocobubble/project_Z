@@ -93,15 +93,14 @@ namespace BattleUI
 			
 			characterButtons = new List<CharacterButton>();
 			
-			CreatepurchasableCharacters();
 			InitializePlayerCharacterButtons();
 			InitializepurchasableCharacterButtons();
 			InitializeCharacterButtons();
+			UpdatePurchasableCharacters();
 			UpdateCharacterButtonsText();
 		}
 
-
-		private void CreatepurchasableCharacters()
+		private void UpdatePurchasableCharacters()
 		{
 			var characterDatabase = setupManager.GetCharacterDatabase();
 			// select 5 random characters in the database
@@ -115,6 +114,11 @@ namespace BattleUI
 				purchasableCharacters.Add(characterBundle);
 			}
 			setupManager.SetpurchasableCharacters(purchasableCharacters);
+
+			for (int i = 0; i < purchasableCharacterButtons.Count; i++)
+			{
+				purchasableCharacterButtons[i].SetCharacterBundle(purchasableCharacters[i]);
+			}
 		}
 
 		private void InitializePlayerCharacterButtons()
@@ -137,6 +141,7 @@ namespace BattleUI
 				characterButtons.Add(playerButton);
 			}
 		}
+
 		private void InitializeCharacterButtons()
 		{
 			foreach (var characterButton in characterButtons)
@@ -216,13 +221,13 @@ namespace BattleUI
 
 		private void InitializepurchasableCharacterButtons()
 		{
-			var purchasableCharacters = setupManager.GetpurchasableCharacters();
+			// var purchasableCharacters = setupManager.GetpurchasableCharacters();
 			purchasableCharacterButtons = new List<CharacterButton> {
-				new CharacterButton(0, purchasableCharacterButton0, purchasableCharacters[0], CharacterButtonType.PURCHASABLE),
-				new CharacterButton(1, purchasableCharacterButton1, purchasableCharacters[1], CharacterButtonType.PURCHASABLE),
-				new CharacterButton(2, purchasableCharacterButton2, purchasableCharacters[2], CharacterButtonType.PURCHASABLE),
-				new CharacterButton(3, purchasableCharacterButton3, purchasableCharacters[3], CharacterButtonType.PURCHASABLE),
-				new CharacterButton(4, purchasableCharacterButton4, purchasableCharacters[4], CharacterButtonType.PURCHASABLE)
+				new CharacterButton(0, purchasableCharacterButton0, null, CharacterButtonType.PURCHASABLE),
+				new CharacterButton(1, purchasableCharacterButton1, null, CharacterButtonType.PURCHASABLE),
+				new CharacterButton(2, purchasableCharacterButton2, null, CharacterButtonType.PURCHASABLE),
+				new CharacterButton(3, purchasableCharacterButton3, null, CharacterButtonType.PURCHASABLE),
+				new CharacterButton(4, purchasableCharacterButton4, null, CharacterButtonType.PURCHASABLE)
 			};	
 
 			foreach (var purchasableButton in purchasableCharacterButtons)
@@ -261,7 +266,16 @@ namespace BattleUI
 
 		private void Reroll()
 		{
-			Debug.Log("Rerolling Button Clicked");
+			CustomLogger.Log("Rerolling Button Clicked");
+			var curCoin = GetCurrentCoin();
+			if (curCoin < BattleConstants.REROLL_COST)
+			{
+				CustomLogger.Log("Not enough coin to reroll");
+				return;
+			}
+			battleManager.GainCoin(-BattleConstants.REROLL_COST);
+			UpdatePurchasableCharacters();
+			UpdateCharacterButtonsText();
 		}
 
 		private void Sell()
@@ -343,5 +357,16 @@ namespace BattleUI
 				purchasableButton.UpdateCharacterButtonsText();
 			}
 		}
+#region Get Set
+		public int GetCurrentCoin()
+		{
+			if (battleManager == null)
+			{
+				CustomLogger.LogError("BattleManager is null");
+				return 0;
+			}
+			return battleManager.GetCoin();
+		}
+#endregion
 	}
 }

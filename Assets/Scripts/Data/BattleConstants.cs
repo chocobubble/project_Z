@@ -10,7 +10,7 @@ namespace Data
 		public static int BATTLE_CHARACTER_COUNT = 4;
 		public static int PURCHASE_CHARACTER_PRICE = 3;
 		public static int DEFAULT_SELL_CHARACTER_PRICE = 2;
-
+		public static int REROLL_COST = 1;
 		public static float TURN_DURATION = 2.0f;
 		public static float MOVE_SPEED = 3f;
 		public static Vector3 ENEMY_ATTACK_POSITION = new Vector3(0.5f, 0, 0);
