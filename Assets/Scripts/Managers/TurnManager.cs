@@ -256,7 +256,13 @@ namespace Battle
 
 		private bool IsBattleEnd()
 		{
+			// FIXME: 전부 죽었을 때도 끝나는 걸로 처리하자
 			return playerCharacters[0] == null || enemyCharacters[0] == null;
+		}
+
+		public bool DidPlayerWin()
+		{
+			return enemyCharacters[0] == null;
 		}
 
 		private void OnAttackPhase()

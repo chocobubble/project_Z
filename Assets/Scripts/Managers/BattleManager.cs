@@ -122,13 +122,48 @@ namespace Battle
 				 	if (turnManager.CurrentTurnPhase == TurnPhase.End)
 					{
 						RemoveCharacters();
-
+						OnTurnEnd();
 						CurrentBattleState = BattleState.Setup;
 					}
 					break;
 				case BattleState.End:
 					break;
 			}
+		}
+
+		private void OnTurnEnd()
+		{
+			var didPlayerWin = turnManager.DidPlayerWin();
+			if (didPlayerWin) OnPlayerWin();
+			else OnPlayerLose();
+		}
+
+		private void OnPlayerLose()
+		{
+			if (playerStats == null) 
+			{
+				CustomLogger.LogError("PlayerStats is null");
+				return;
+			}
+			playerStats.Gold = BattleConstants.BATTLE_DEFAULT_COIN;
+			playerStats.Turn += 1;
+			playerStats.Heart -= 1;
+
+			// TODO: playerStats.Heart <= 0 일 때 종료
+		}
+
+		private void OnPlayerWin()
+		{
+			if (playerStats == null) 
+			{
+				CustomLogger.LogError("PlayerStats is null");
+				return;
+			}
+			playerStats.Gold = BattleConstants.BATTLE_DEFAULT_COIN;
+			playerStats.Turn += 1;
+			playerStats.WinStreak += 1;
+
+			// TODO: player winstreak > 10 일 때 종료
 		}
 
 		private void SpawnCharacters()

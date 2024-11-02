@@ -21,14 +21,14 @@
                 <engine:Button text="Settings" name="settings-button" />
             </engine:VisualElement>
         </engine:VisualElement>
-        <engine:VisualElement name="mid-container" style="flex-grow: 1;">
-            <engine:VisualElement name="player-character-container" style="flex-grow: 1; flex-direction: row; justify-content: center;">
+        <engine:VisualElement name="mid-container" style="flex-grow: 1; align-items: flex-start;">
+            <engine:VisualElement name="player-character-container" class="playerCharacterButtonsContainer" style="flex-grow: 1; flex-direction: row; justify-content: flex-start;">
                 <engine:Button text="Button" name="player-character-button0" />
                 <engine:Button text="Button" name="player-character-button1" />
                 <engine:Button text="Button" name="player-character-button2" />
                 <engine:Button text="Button" name="player-character-button3" />
             </engine:VisualElement>
-            <engine:VisualElement name="purchasable-character-container" style="flex-grow: 1; flex-direction: row; justify-content: center;">
+            <engine:VisualElement name="purchasable-character-container" class="puchasableCharacterButtonsContainer" style="flex-grow: 1; flex-direction: row; justify-content: flex-start;">
                 <engine:Button text="Button" name="purchasable-character-button0" />
                 <engine:Button text="Button" name="purchasable-character-button1" />
                 <engine:Button text="Button" name="purchasable-character-button2" />
