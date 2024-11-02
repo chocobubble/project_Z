@@ -38,6 +38,7 @@
         </engine:VisualElement>
         <engine:VisualElement name="bot-container" style="flex-grow: 0.2; flex-shrink: 0.2; flex-direction: row; justify-content: space-between;">
             <engine:Button text="Reroll" name="reroll-button" />
+            <engine:Button text="Sell" name="sell-button" />
             <engine:Button text="Turn End" name="setup-end-button" />
         </engine:VisualElement>
     </engine:VisualElement>

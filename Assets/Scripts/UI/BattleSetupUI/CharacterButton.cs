@@ -43,6 +43,7 @@ namespace BattleUI
 
 		public void Reset() 
 		{
+			button.Blur();
 			button.text = "";
 			characterBundle = null;
 		}

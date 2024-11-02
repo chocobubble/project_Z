@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design.Serialization;
 using Battle;
 using Character;
 using Data;
 using Setup;
-using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -19,6 +17,7 @@ namespace BattleUI
 		private Label turnLabel;
 		private Label heartLabel;
 		private Button rerollButton;
+		private Button sellButton;
 		private Button setupEndButton;
 		private PlayerStats playerStats;
 		public BattleManager battleManager;
@@ -62,8 +61,10 @@ namespace BattleUI
 			turnLabel = root.Q<Label>("turn-label");
 			heartLabel = root.Q<Label>("heart-label");
 			rerollButton = root.Q<Button>("reroll-button");
+			sellButton = root.Q<Button>("sell-button");
 			setupEndButton = root.Q<Button>("setup-end-button");
 			rerollButton.clicked += Reroll;
+			sellButton.clicked += Sell;
 			setupEndButton.clicked += SetupEnd;
 
 			isSetupEnd = false;
@@ -98,6 +99,7 @@ namespace BattleUI
 			InitializeCharacterButtons();
 			UpdateCharacterButtonsText();
 		}
+
 
 		private void CreatepurchasableCharacters()
 		{
@@ -260,6 +262,35 @@ namespace BattleUI
 		private void Reroll()
 		{
 			Debug.Log("Rerolling Button Clicked");
+		}
+
+		private void Sell()
+		{
+			// TODO: player character 선택된 상태에서만 활성화되게 변경하면 좋을듯
+			if (SelectedCharacterButton == null)
+			{
+				CustomLogger.Log("No character selected to sell");
+				return;
+			}
+
+			var characterButtonType = SelectedCharacterButton.GetCharacterButtonType();
+			if (characterButtonType == CharacterButtonType.PURCHASABLE)
+			{
+				CustomLogger.Log("Cannot sell purchasable character");
+				return;
+			}
+
+			if (characterButtonType == CharacterButtonType.PLAYER)
+			{
+				battleManager.ExcludeCharacterFromPlayer(SelectedCharacterButton.GetButtonIndex());
+				var characterCost = BattleConstants.DEFAULT_SELL_CHARACTER_PRICE;
+				battleManager.GainCoin(characterCost);
+				SelectedCharacterButton.Reset();
+				SelectedCharacterButton = null;
+				UpdateCharacterButtonsText();
+			}
+
+
 		}
 
 		private void SetupEnd()

@@ -246,6 +246,17 @@ namespace Battle
 
 		}
 
+		public void ExcludeCharacterFromPlayer(int index)
+		{
+			playerCharacterBundles[index] = null;
+		}
+
+		public void GainCoin(int amount)
+		{
+			playerStats.Gold += amount;
+		}
+
+#region Get Set
 		public PlayerStats GetPlayerStats()
 		{
 			return playerStats;
@@ -260,5 +271,6 @@ namespace Battle
 		{
 			return playerCharacterBundles;
 		}	
+#endregion
 	}
 }	
