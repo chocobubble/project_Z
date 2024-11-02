@@ -121,7 +121,9 @@ namespace Battle
 				case BattleState.Start:
 				 	if (turnManager.CurrentTurnPhase == TurnPhase.End)
 					{
-						ChangeBattleState(BattleState.Setup);
+						RemoveCharacters();
+
+						CurrentBattleState = BattleState.Setup;
 					}
 					break;
 				case BattleState.End:
@@ -177,17 +179,21 @@ namespace Battle
 
 		private void OnBattleStateChangedHandler(BattleState battleState)
 		{
+			Debug.Log("Battle State Changed to  " + battleState);
 			// TODO : 스택 무한히 쌓일 가능성..
 			switch (battleState)
 			{
 				case BattleState.None:
 					break;
 				case BattleState.Setup:
+					Camera.main.transform.position = BattleConstants.BATTLE_SETUP_CAMERA_POSITION;
 					turnManager.gameObject.SetActive(false);
 					setupManager.gameObject.SetActive(true);
 					battleSetupUIController.gameObject.SetActive(true);
+					DebugUIGameObject?.SetActive(false);
 					break;
 				case BattleState.Start:
+				 	Camera.main.transform.position = BattleConstants.BATTLE_START_CAMERA_POSITION;
 					turnManager.gameObject.SetActive(true);
 					SpawnCharacters();
 					// turnManager.CurrentTurnPhase = TurnPhase.PreAttack;
@@ -196,7 +202,6 @@ namespace Battle
 					DebugUIGameObject?.SetActive(true);
 					break;
 				case BattleState.End:
-					RemoveCharacters();
 					break;
 			}
 		}

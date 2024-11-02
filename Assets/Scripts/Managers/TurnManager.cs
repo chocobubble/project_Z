@@ -40,6 +40,7 @@ namespace Battle
 
 		private void OnPhaseChanged(TurnPhase turnPhase)
 		{
+			Debug.Log("Turn phase changed to " + turnPhase);
 			switch (turnPhase)
 			{
 				case TurnPhase.None:
@@ -104,10 +105,14 @@ namespace Battle
 					// CurrentTurnPhase = TurnPhase.PreAttack;
 					break;
 				case TurnPhase.PreAttack:
-					CurrentTurnPhase = TurnPhase.Attack;
+				 	OnAttackPhase();
+					CurrentTurnPhase = TurnPhase.Positioning;
+					break;
+				case TurnPhase.Positioning:
+					CheckMovingToTargetEnd();
 					break;
 				case TurnPhase.Attack:
-				 	OnAttackPhase();
+					ActionBaseAttack();
 					CurrentTurnPhase = TurnPhase.PostAttack;
 					break;
 				case TurnPhase.PostAttack:
@@ -118,13 +123,39 @@ namespace Battle
 					// wait for a while
 
 					break;
-				case TurnPhase.Positioning:
-					// if (IsAllCharactersIdle())
-					// {
-					// 	CurrentTurnPhase = TurnPhase.PreAttack;
-					// }
-					break;
 			}
+		}
+
+		private void CheckMovingToTargetEnd()
+		{
+			bool isCharacterMoving = false;
+			for (int i = 0; i < playerCharacters.Count; i++)
+			{
+				if (playerCharacters[i] == null)
+				{
+					continue;
+				}
+				if (playerCharacters[i].GetComponent<UnitController>().IsMoving())
+				{
+					isCharacterMoving = true;
+				}
+			}
+			for (int i = 0; i < enemyCharacters.Count; i++)
+			{
+				if (enemyCharacters[i] == null)
+				{
+					continue;
+				}
+				if (enemyCharacters[i].GetComponent<UnitController>().IsMoving())
+				{
+					isCharacterMoving = true;
+				}
+			}
+			if (isCharacterMoving)
+			{
+				return;
+			}
+			CurrentTurnPhase = TurnPhase.Attack;
 		}
 
 		private bool IsMovingToTargetEnd()
@@ -231,10 +262,10 @@ namespace Battle
 		private void OnAttackPhase()
 		{
 			Debug.Log("OnAttackPhase");
-			playerCharacters[0].GetComponent<UnitController>().CharacterActionState = CharacterActionState.MovingToTarget;
 			playerCharacters[0].GetComponent<UnitController>().SetTargetPosition(BattleConstants.PLAYER_ATTACK_POSITION);
-			enemyCharacters[0].GetComponent<UnitController>().CharacterActionState = CharacterActionState.MovingToTarget;
+			playerCharacters[0].GetComponent<UnitController>().CharacterActionState = CharacterActionState.MovingToTarget;
 			enemyCharacters[0].GetComponent<UnitController>().SetTargetPosition(BattleConstants.ENEMY_ATTACK_POSITION);
+			enemyCharacters[0].GetComponent<UnitController>().CharacterActionState = CharacterActionState.MovingToTarget;
 		}
 
 		void OnDestroy()

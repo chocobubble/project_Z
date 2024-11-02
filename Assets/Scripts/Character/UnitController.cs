@@ -11,6 +11,8 @@ namespace Character
 		[SerializeField]
 		private bool isMoving;
 		[SerializeField]
+		private bool isBaseAttackFinished;
+		[SerializeField]
 		private Vector3 basePosition;
 		[SerializeField]
 		private Vector3 targetPosition;
@@ -54,12 +56,6 @@ namespace Character
 
 		void Update()
 		{
-			if (isMoving)
-			{
-				// transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * BattleConstants.MOVE_SPEED);
-				transform.position = Vector3.Lerp(transform.position, targetPosition, BattleConstants.MOVE_SPEED * Time.deltaTime);
-			}
-
 			// On action state changed logic
 			switch (_characterActionState)
 			{
@@ -74,9 +70,13 @@ namespace Character
 					}
 					break;
 				case CharacterActionState.Attacking:
-					Attack(enemyCharactersManager.GetUnitController(0));
-					CharacterActionState = CharacterActionState.ReturningToPosition;
-					targetPosition = basePosition;
+					// Attack(enemyCharactersManager.GetUnitController(0));
+					if (isBaseAttackFinished)
+					{
+						CharacterActionState = CharacterActionState.ReturningToPosition;
+						targetPosition = basePosition;
+						isBaseAttackFinished = false;
+					}
 					break;
 				case CharacterActionState.ReturningToPosition:
 					isMoving = true;
@@ -105,6 +105,16 @@ namespace Character
 			}
 
 			CheckCharacterState();
+		}
+
+		private void LateUpdate()
+		{
+
+			if (isMoving)
+			{
+				// transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * BattleConstants.MOVE_SPEED);
+				transform.position = Vector3.Lerp(transform.position, targetPosition, BattleConstants.MOVE_SPEED * Time.deltaTime);
+			}
 		}
 
 		private void CheckCharacterState()
@@ -169,6 +179,7 @@ namespace Character
 		{
 			// Base attack logic
 			Attack(enemyCharactersManager.GetUnitController(0));
+			isBaseAttackFinished = true;
 		}
 
 		public void OnActionStateChanged(CharacterActionState characterActionState)
@@ -181,10 +192,12 @@ namespace Character
 					isMoving = false;
 					break;
 				case CharacterActionState.MovingToTarget:
+					isMoving = true;
 					break;
 				case CharacterActionState.Attacking:
 					break;
 				case CharacterActionState.ReturningToPosition:
+					isMoving = true;
 					break;
 				case CharacterActionState.Stunned:
 					break;
@@ -198,21 +211,7 @@ namespace Character
 			}
 		}
 
-		public void SetCharactersManagers(CharactersManager allyCharactersManager, CharactersManager enemyCharactersManager)
-		{
-			this.allyCharactersManager = allyCharactersManager;
-			this.enemyCharactersManager = enemyCharactersManager;
-		}
 
-		public void SetBasePosition(Vector3 basePosition)
-		{
-			this.basePosition = basePosition;
-		}
-
-		public void SetTargetPosition(Vector3 targetPosition)
-		{
-			this.targetPosition = targetPosition;
-		}
 
 		// 타겟 포지션에 도착했는 지 확인하는 함수
 		public bool IsArrivedAtTargetPosition()
@@ -228,10 +227,30 @@ namespace Character
 				return false;
 			}
 		}
-
+#region Get Set
 		public void SetCharacterActionState(CharacterActionState characterActionState)
 		{
 			CharacterActionState = characterActionState;
 		}
+		public void SetCharactersManagers(CharactersManager allyCharactersManager, CharactersManager enemyCharactersManager)
+		{
+			this.allyCharactersManager = allyCharactersManager;
+			this.enemyCharactersManager = enemyCharactersManager;
+		}
+
+		public void SetBasePosition(Vector3 basePosition)
+		{
+			this.basePosition = basePosition;
+		}
+
+		public void SetTargetPosition(Vector3 targetPosition)
+		{
+			this.targetPosition = targetPosition;
+		}
+		public bool IsMoving()
+		{
+			return isMoving;
+		}
+#endregion
 	}
 }

@@ -281,9 +281,6 @@ namespace BattleUI
 				Debug.LogError("BattleManager is null");
 			}
 			DeActivateUI();
-
-			// move camera to the battle scene
-			Camera.main.transform.position = BattleConstants.BATTLE_START_CAMERA_POSITION; // Adjust the position as needed
 		}
 
 		public void UpdateCoin(int coin)
